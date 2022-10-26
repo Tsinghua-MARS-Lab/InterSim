@@ -1,0 +1,83 @@
+/*===== COMMINGSOON =====*/
+.comingsoon-wrapper {
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  .app-brand {
+    margin-bottom: 2rem;
+  }
+}
+.comingsoon-header {
+  h1 {
+    text-transform: uppercase;
+    margin-bottom: 0.325rem;
+    font-size: 1.875rem;
+    @include media-breakpoint-up(md){
+      font-size: 2.34rem;
+    }
+  }
+}
+
+.syotimer__body {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  @include media-breakpoint-up(md){
+    margin-top: 3.75rem;
+    margin-bottom: 3.75rem;
+  }
+}
+
+.syotimer-cell {
+  width: 70px;
+  height: 80px;
+  margin-right: .75rem;
+  border: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+
+  @include media-breakpoint-up(md){
+    width: 120px;
+    height: 150px;
+    margin-right: 30px;
+  }
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.syotimer-cell__value {
+  font-size: 2rem;
+  color: $dark;
+  @include media-breakpoint-up(md){
+    font-size: 3.5rem;
+  }
+}
+
+.syotimer-cell__unit {
+  display: none;
+}
+
+
+.form-subscript {
+  position: relative;
+  max-width: 440px;
+  margin-left: .5rem;
+  margin-right: .5rem;
+  @include media-breakpoint-up(sm){
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .btn-search {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 16px;
+    font-size: 1.5rem;
+  }
+}
+

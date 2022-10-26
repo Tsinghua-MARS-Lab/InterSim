@@ -1,0 +1,11 @@
+/*===== PAGE 404 =====*/
+.page-404 {
+  .error-title {
+    font-size: 6rem;
+    color: $dark;
+    font-weight: 700;
+    @include media-breakpoint-up(md){
+      font-size: 8.75rem;
+    }
+  }
+}

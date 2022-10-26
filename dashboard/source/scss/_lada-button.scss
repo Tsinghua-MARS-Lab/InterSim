@@ -1,0 +1,47 @@
+/*===== BUTTON LOADING =====*/
+.btn.btn-ladda {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: 500;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: manipulation;
+  box-shadow: none;
+  cursor: pointer;
+  white-space: nowrap;
+  @include button-size(auto, 20px, 15px, auto, 0px);
+}
+
+.ladda-button[data-style="contract-overlay"][data-loading] {
+  z-index: 100;
+  width: 45px;
+}
+
+.ladda-button[data-style="contract"][data-loading] {
+  width: 45px;
+}
+
+.btn-primary.ladda-button[data-loading]:hover {
+  background-color: $primary;
+}
+.btn-secondary.ladda-button[data-loading]:hover {
+  background-color: $secondary;
+}
+.btn-info.ladda-button[data-loading]:hover {
+  background-color: $info;
+}
+.btn-success.ladda-button[data-loading]:hover {
+  background-color: $success;
+}
+.btn-warning.ladda-button[data-loading]:hover {
+  background-color: $warning;
+}
+.btn-danger.ladda-button[data-loading]:hover {
+  background-color: $danger;
+}
+.btn-light.ladda-button[data-loading]:hover {
+  background-color: $light;
+}
+.btn-dark.ladda-button[data-loading]:hover {
+  background-color: $dark;
+}

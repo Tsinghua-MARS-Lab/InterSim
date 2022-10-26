@@ -1,0 +1,36 @@
+/*===== TOASTS =====*/
+.toast {
+  box-shadow: none !important;
+  opacity: 1 !important;
+  &.toast-info {
+    background-color: $info;
+  }
+  &.toast-success {
+    background-color: $success;
+  }
+  &.toast-warning {
+    background-color: $warning;
+  }
+  &.toast-error {
+    background-color: $danger;
+  }
+  &:hover {
+    box-shadow: none !important;
+  }
+}
+
+#toast-container{
+  margin-top: 65px;
+  right:0;
+  z-index: 999;
+  .toast-success {
+    background-color: $primary;
+    opacity: 1;
+  }
+}
+#toast-container>div{
+  box-shadow: none;
+}
+#toast-container>div:hover{
+  box-shadow: none;
+}

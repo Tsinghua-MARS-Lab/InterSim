@@ -1,0 +1,334 @@
+/*===== FORM =====*/
+/* Form Control Secondary */
+.form-control-secondary {
+  background-color: $gray-100;
+  font-size: 0.88rem;
+}
+
+label {
+  color: $dark;
+  font-weight: 600;
+}
+
+/* Contextual Style */
+
+.checkbox-secondary {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    color: $white;
+    background-color: $secondary;
+    border-color: $secondary;
+  }
+}
+
+.checkbox-success {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    color: $white;
+    background-color: $success;
+    border-color: $success;
+  }
+}
+
+.checkbox-danger {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    color: $white;
+    background-color: $danger;
+    border-color: $danger;
+  }
+}
+
+.checkbox-warning {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    color: $white;
+    background-color: $warning;
+    border-color: $warning;
+  }
+}
+
+.checkbox-info {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    color: $white;
+    background-color: $info;
+    border-color: $info;
+  }
+}
+
+.checkbox-light {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    color: $white;
+    background-color: $light;
+    border-color: $light;
+  }
+}
+
+.checkbox-dark {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    color: $white;
+    background-color: $dark;
+    border-color: $dark;
+  }
+}
+
+
+/* Checkbox Ouline */
+.checkbox-outline-primary,
+.checkbox-outline-secondary,
+.checkbox-outline-success,
+.checkbox-outline-danger,
+.checkbox-outline-warning,
+.checkbox-outline-info,
+.checkbox-outline-light,
+.checkbox-outline-dark {
+  .custom-control-input:checked ~ .custom-control-label::after {
+    left: -18px;
+    top: 6px;
+    width: 5px;
+    height: 8px;
+    background: transparent!important;
+    border: solid $primary;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+}
+.checkbox-outline-primary {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    color: $dark !important;
+    background-color: transparent;
+  }
+
+}
+
+.checkbox-outline-secondary {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: transparent;
+    border-color: $secondary;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    border-color: $secondary;
+  }
+
+}
+
+.checkbox-outline-success {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: transparent;
+    border-color: $success;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    border-color: $success;
+  }
+}
+
+.checkbox-outline-danger {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: transparent;
+    border-color: $danger;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    border-color: $danger;
+  }
+}
+
+.checkbox-outline-warning {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: transparent;
+    border-color: $warning;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    border-color: $warning;
+  }
+}
+
+.checkbox-outline-info {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: transparent;
+    border-color: $info;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    border-color: $info;
+  }
+}
+
+.checkbox-outline-light {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: transparent;
+    border-color: $light;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    border-color: $light;
+  }
+}
+
+.checkbox-outline-dark {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: transparent;
+    border-color: $dark;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    border-color: $dark;
+  }
+}
+
+
+/* Checkbox */
+.radio-secondary {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $secondary;
+    background-color: $secondary;
+  }
+}
+
+.radio-success {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $success;
+    background-color: $success;
+  }
+}
+
+.radio-danger {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $danger;
+    background-color: $danger;
+  }
+}
+.radio-info {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $info;
+    background-color: $info;
+  }
+}
+.radio-light {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $light;
+    background-color: $light;
+  }
+}
+.radio-dark {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $dark;
+    background-color: $dark;
+  }
+}
+
+.radio-outline-primary,
+.radio-outline-secondary,
+.radio-outline-success,
+.radio-outline-danger,
+.radio-outline-info,
+.radio-outline-light,
+.radio-outline-dark {
+  .custom-control-input:checked ~ .custom-control-label::after {
+    left: -19px;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $dark;
+
+  }
+}
+
+.radio-outline-primary {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $primary;
+    background-color: $white;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    background: $primary;
+  }
+}
+
+.radio-outline-secondary {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $secondary;
+    background-color: $white;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    background: $secondary;
+  }
+}
+
+
+.radio-outline-success {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $success;
+    background-color: $white;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    background: $success;
+  }
+}
+
+
+.radio-outline-danger {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $danger;
+    background-color: $white;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    background: $danger;
+  }
+}
+
+
+.radio-outline-info {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $info;
+    background-color: $white;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    background: $info;
+  }
+}
+
+
+.radio-outline-light {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $light;
+    background-color: $white;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    background: $light;
+  }
+}
+
+
+.radio-outline-dark {
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: $dark;
+    background-color: $white;
+  }
+  .custom-control-input:checked ~ .custom-control-label::after {
+    background: $dark;
+  }
+}
+
+/* Select2 Select */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+  border-color: $border-color;
+  height: 40px;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border-color: rgba($primary, 0.3);
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  border-color: $primary;
+  background-color: rgba($primary, 0.2);
+  color: $primary;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+  color: $primary;
+  padding-right: 0.31rem;
+  margin-right: 0.31rem;
+  border-right: 1px solid $primary;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 38px;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: $primary;
+}

@@ -1,0 +1,386 @@
+[
+  {
+    "label": "Email Inbox",
+    "link": "email-inbox.html",
+    "tags": "",
+    "location": "email"
+  },
+
+  {
+    "label": "Email Details",
+    "link": "email-details.html",
+    "tags": "",
+    "location": "email"
+  },
+
+  {
+    "label": "Email Compose",
+    "link": "email-compose.html",
+    "tags": "",
+    "location": "email"
+  },
+
+  {
+    "label": "Alert",
+    "link": "alert.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Badge",
+    "link": "badge.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Breadcrumb",
+    "link": "breadcrumb.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Button Default",
+    "link": "button-default.html",
+    "tags": "",
+    "location": "Buttons"
+  },
+
+  {
+    "label": "Button Dropdown",
+    "link": "button-dropdown.html",
+    "tags": "",
+    "location": "Buttons"
+  },
+
+  {
+    "label": "Button Group",
+    "link": "button-group.html",
+    "tags": "",
+    "location": "Buttons"
+  },
+
+  {
+    "label": "Button Social",
+    "link": "button-social.html",
+    "tags": "",
+    "location": "Buttons"
+  },
+
+  {
+    "label": "Button Loading",
+    "link": "button-loading.html",
+    "tags": "",
+    "location": "Buttons"
+  },
+
+  {
+    "label": "Card",
+    "link": "card.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Carousel",
+    "link": "carousel.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Collapse",
+    "link": "collapse.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Editor",
+    "link": "editor.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "List Group",
+    "link": "list-group.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Modal",
+    "link": "modal.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Pagination",
+    "link": "pagination.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Popover &amp; Tooltip",
+    "link": "popover-tooltip.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Progress Bar",
+    "link": "progress-bar.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Spinner",
+    "link": "spinner.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Switches",
+    "link": "switches.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Bootstrap Tables",
+    "link": "bootstarp-tables.html",
+    "tags": "",
+    "location": "Tables"
+  },
+
+  {
+    "label": "Data Tables",
+    "link": "data-tables.html",
+    "tags": "",
+    "location": "Tables"
+  },
+
+  {
+    "label": "Tab",
+    "link": "tab.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Toaster",
+    "link": "toaster.html",
+    "tags": "",
+    "location": "UI Components"
+  },
+
+  {
+    "label": "Material Icon",
+    "link": "material-icons.html",
+    "tags": "",
+    "location": "Icons"
+  },
+
+  {
+    "label": "Flag Icon",
+    "link": "flag-icons.html",
+    "tags": "",
+    "location": "Icons"
+  },
+
+  {
+    "label": "Basic Input",
+    "link": "basic-input.html",
+    "tags": "",
+    "location": "Forms"
+  },
+
+  {
+    "label": "Input Group",
+    "link": "input-group.html",
+    "tags": "",
+    "location": "Forms"
+  },
+
+  {
+    "label": "Checkbox &amp; Radio",
+    "link": "checkbox-radio.html",
+    "tags": "",
+    "location": "Forms"
+  },
+
+  {
+    "label": "Form Validation",
+    "link": "form-validation.html",
+    "tags": "",
+    "location": "Forms"
+  },
+
+  {
+    "label": "Form Advance",
+    "link": "form-advance.html",
+    "tags": "",
+    "location": "Forms"
+  },
+
+  {
+    "label": "Google Map",
+    "link": "google-maps.html",
+    "tags": "",
+    "location": "Maps"
+  },
+
+  {
+    "label": "Vector Map",
+    "link": "vector-maps.html",
+    "tags": "",
+    "location": "Maps"
+  },
+
+  {
+    "label": "General Widget",
+    "link": "widgets-general.html",
+    "tags": "maps, todos, profiles, notifications, customers, cards",
+    "location": "Widgets"
+  },
+
+  {
+    "label": "Chart Widget",
+    "link": "widgets-chart.html",
+    "tags": "",
+    "location": "Widgets"
+  },
+
+  {
+    "label": "Apex Charts",
+    "link": "apex-charts.html",
+    "tags": "",
+    "location": "Charts"
+  },
+
+  {
+    "label": "User Profile",
+    "link": "user-profile.html",
+    "tags": "",
+    "location": "User"
+  },
+
+  {
+    "label": "User Activities",
+    "link": "user-activities.html",
+    "tags": "",
+    "location": "User"
+  },
+
+  {
+    "label": "User Profile Settings",
+    "link": "user-profile-settings.html",
+    "tags": "",
+    "location": "User"
+  },
+
+  {
+    "label": "User Account Settings",
+    "link": "user-account-settings.html",
+    "tags": "",
+    "location": "User"
+  },
+
+  {
+    "label": "User Planing Settings",
+    "link": "user-planing-settings.html",
+    "tags": "",
+    "location": "User"
+  },
+
+  {
+    "label": "User billing",
+    "link": "user-billing.html",
+    "tags": "",
+    "location": "User"
+  },
+
+  {
+    "label": "User Notify Settings",
+    "link": "user-notify-settings.html",
+    "tags": "",
+    "location": "User"
+  },
+
+  {
+    "label": "Sign In",
+    "link": "sign-in.html",
+    "tags": "",
+    "location": "Authentication"
+  },
+
+  {
+    "label": "Sign Up",
+    "link": "sign-up.html",
+    "tags": "",
+    "location": "Authentication"
+  },
+
+  {
+    "label": "Reset Password",
+    "link": "reset-password.html",
+    "tags": "",
+    "location": "Authentication"
+  },
+
+  {
+    "label": "Invoice",
+    "link": "invoice.html",
+    "tags": "",
+    "location": "Other pages"
+  },
+
+  {
+    "label": "404 page",
+    "link": "404.html",
+    "tags": "",
+    "location": "Other pages"
+  },
+
+  {
+    "label": "Coming Soon",
+    "link": "page-comingsoon.html",
+    "tags": "",
+    "location": "Other pages"
+  },
+
+  {
+    "label": "Maintenance",
+    "link": "page-maintenance.html",
+    "tags": "",
+    "location": "Other pages"
+  },
+
+  {
+    "label": "Navbar",
+    "link": "navbar-customization.html",
+    "tags": "",
+    "location": "Customization"
+  },
+
+  {
+    "label": "Sidebar",
+    "link": "sidebar-customization.html",
+    "tags": "",
+    "location": "Customization"
+  },
+
+  {
+    "label": "Styling",
+    "link": "styling.html",
+    "tags": "",
+    "location": "Customization"
+  }
+]

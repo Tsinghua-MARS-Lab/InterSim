@@ -1,0 +1,87 @@
+/*===== PAGINATION =====*/
+.pagination {
+  .page-link {
+    color: $text-color;
+    font-size: 0.75rem;
+    padding: 8px 12px;
+    @include media-breakpoint-up(lg){
+      padding: 1rem 1.3125rem;
+      font-size: 0.94rem;
+    }
+    .mdi::before {
+      line-height: 1;
+    }
+  }
+}
+
+.pagination-flat .page-item .page-link {
+  border: 0px;
+}
+
+.pagination-flat-rounded .page-item .page-link {
+  border-radius: 50%;
+  margin-right: 0.25rem;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 23px;
+
+  @include media-breakpoint-up(lg){
+    width: 50px;
+    height: 50px;
+    line-height: 18px;
+  }
+}
+
+.pagination-seperated .page-item {
+  .page-link {
+    margin: 0 0.31rem;
+    border-radius: 0;
+  }
+  &:last-child .page-link {
+    margin-right: 0;
+  }
+  &:first-child .page-link {
+    margin-left: 0;
+  }
+}
+
+.pagination-seperated-rounded {
+  .page-item {
+    .page-link {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      line-height: 23px;
+
+      @include media-breakpoint-up(lg){
+        width: 50px;
+        height: 50px;
+        line-height: 18px;
+      }
+    }
+    &:first-child,
+    &:last-child {
+      .page-link {
+        @include media-breakpoint-up(lg){
+          border-radius: 6.25rem;
+          width: auto;
+          height: auto;
+        }
+      }
+    }
+  }
+}
+
+.border-rounded {
+  .page-item:last-child .page-link {
+    border-top-right-radius: 6.25rem;
+    border-bottom-right-radius: 6.25rem;
+  }
+  .page-item:first-child .page-link {
+    margin-left: 0;
+    border-top-left-radius: 6.25rem;
+    border-bottom-left-radius: 6.25rem;
+  }
+}

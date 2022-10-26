@@ -1,0 +1,39 @@
+/*===== BADGE =====*/
+.badge {
+  text-transform: uppercase;
+  &.badge-square {
+    border-radius: 0px;
+  }
+  &.badge-outline-primary {
+    border: 1px solid $primary;
+    color: $primary;
+  }
+  &.badge-outline-secondary {
+    border: 1px solid $secondary;
+    color: $secondary;
+  }
+  &.badge-outline-success {
+    border: 1px solid $success;
+    color: $success;
+  }
+  &.badge-outline-danger {
+    border: 1px solid $danger;
+    color: $danger;
+  }
+  &.badge-outline-warning {
+    border: 1px solid $warning;
+    color: $warning;
+  }
+  &.badge-outline-info {
+    border: 1px solid $info;
+    color: $info;
+  }
+  &.badge-outline-light {
+    border: 1px solid $light;
+    color: $light;
+  }
+  &.badge-outline-dark {
+    border: 1px solid $dark;
+    color: $dark;
+  }
+}

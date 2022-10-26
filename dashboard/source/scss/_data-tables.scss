@@ -1,0 +1,83 @@
+/* ===== Data Tables ===== */
+
+table.dataTable thead th {
+  white-space: nowrap;
+}
+
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc,
+table.dataTable thead .sorting {
+  border-bottom: 0;
+  padding-right: 20px;
+  @include media-breakpoint-up(xl){
+    background-position-x: 90%;
+  }
+}
+
+.table.dataTable.no-footer,
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+  border-bottom-color: $border-color
+}
+
+/* Data table Filter */
+.dataTables_wrapper .dataTables_filter {
+  float: none;
+  text-align: left;
+  margin-bottom: 15px;
+  label {
+    color: $dark;
+    font-weight: 700;
+  }
+  input {
+    padding: 10px 15px;
+    border: 1px solid $border-color;
+    border-radius: 5px;
+  }
+}
+
+/* Datatable Pagination */
+.dataTables_paginate.paging_simple_numbers {
+  margin-top: 30px;
+  .paginate_button {
+    border: 1px solid $border-color !important;
+    padding: 10px;
+    background: none !important;
+    background-color: $white;
+    margin-left: 5px;
+    margin-right: 5px;
+    @include media-breakpoint-up(md){
+     padding: 10px 20px;
+    }
+    &:hover {
+      color: $dark !important;
+    }
+    &.current {
+      background: none !important;
+      background-color: $primary !important;
+      border-color: $primary !important;
+      color: $white !important;
+      &:hover {
+        color: $white !important;
+      }
+    }
+  }
+
+  .paginate_button.previous.disabled,
+  .paginate_button.next.disabled {
+    color: $text-color !important;
+    border-color: $border-color !important;
+  }
+
+
+  .paginate_button.previous,
+  .paginate_button.next {
+    color: $primary !important;
+    border-color: $primary !important;
+    display: none;
+    @include media-breakpoint-up(sm){
+      display: inline-block;
+    }
+  }
+
+}
+

@@ -1,0 +1,31 @@
+/* ===== APEXCHARTS ===== */
+/* Apexchart Canvas */
+.apexcharts-canvas {
+  svg {
+    border-radius: 0.3125rem;
+  }
+}
+
+/* Radial Chart Bar Footer */
+.radial-bar-chart-footer {
+  text-align: center;
+  .title-large {
+    font-size: 1.625rem;
+    color: $dark;
+    i {
+      font-size: 1.25rem;
+    }
+  }
+  .title-small {
+    color: $text-color;
+  }
+}
+
+#mixed-chart-1,
+#mixed-chart-2 {
+  .apexcharts-tooltip {
+    background-color: $dark !important;
+    color: $white !important;
+    border: none;
+  }
+}

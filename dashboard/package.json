@@ -1,0 +1,30 @@
+{
+  "name": "mono",
+  "version": "1.0.0",
+  "description": "Mono Free Bootstrap Admin Dashboard Template",
+  "author": "Themefisher",
+  "license": "MIT",
+  "scripts": {
+    "dev": "gulp",
+    "build": "gulp build"
+  },
+  "dependencies": {
+    "bootstrap": "^4.4.1",
+    "browser-sync": "^2.27.10",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^6.1.0",
+    "gulp-file-include": "^2.3.0",
+    "gulp-header-comment": "^0.10.0",
+    "gulp-jshint": "^2.1.0",
+    "gulp-rimraf": "^1.0.0",
+    "gulp-sass": "^5.1.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-util": "^1.0.0",
+    "jshint-stylish": "^2.2.1",
+    "sass": "^1.53.0",
+    "two.js": "^0.8.10"
+  },
+  "devDependencies": {
+    "jshint": "^2.13.5"
+  }
+}

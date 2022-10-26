@@ -1,0 +1,26 @@
+/*===== ALERT =====*/
+.alert {
+  &.alert-icon {
+    padding-left: 4.375rem;
+    border: none;
+    i {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 100%;
+      text-align: center;
+      line-height: 50px;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+      background-color: rgba($black, 0.1);
+      font-size: 1.25rem;
+    }
+
+  }
+  &.alert-outlined {
+    background-color: transparent;
+    color: $dark;
+  }
+}
+

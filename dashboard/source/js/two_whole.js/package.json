@@ -1,0 +1,87 @@
+{
+  "name": "two.js",
+  "version": "v0.8.10",
+  "description": "A renderer agnostic two-dimensional drawing api for the web.",
+  "module": "build/two.module.js",
+  "types": "types.d.ts",
+  "files": [
+    "package.json",
+    "LICENSE",
+    "README.md",
+    "build",
+    "extras",
+    "src",
+    "types.d.ts"
+  ],
+  "scripts": {
+    "build": "node ./utils/build",
+    "dev": "esbuild --servedir=. --serve=8080",
+    "docs:generate": "node ./utils/document",
+    "docs:dev": "vuepress dev wiki",
+    "docs:build": "vuepress build wiki",
+    "docs:publish": "./deploy.sh",
+    "lint": "eslint . --fix",
+    "types": "tsc --outFile types.d.ts"
+  },
+  "directories": {
+    "docs": "wiki/docs",
+    "test": "tests",
+    "example": "wiki/examples"
+  },
+  "keywords": [
+    "svg",
+    "canvas2d",
+    "webgl",
+    "animation",
+    "rendering",
+    "scenegraph",
+    "motiongraphics",
+    "visualization",
+    "dom",
+    "w3c",
+    "bitmap",
+    "vector"
+  ],
+  "homepage": "https://two.js.org/",
+  "author": {
+    "name": "jonobr1",
+    "url": "http://jonobr1.com/"
+  },
+  "main": "build/two.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonobr1/two.js"
+  },
+  "bugs": {
+    "url": "https://github.com/jonobr1/two.js/issues"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@vuepress/plugin-google-analytics": "^1.8.2",
+    "@vuepress/plugin-nprogress": "^1.5.4",
+    "babel-eslint": "^10.1.0",
+    "chalk": "^2.4.2",
+    "commander": "^2.20.3",
+    "esbuild": "^0.14.6",
+    "eslint": "^7.8.1",
+    "esm": "^3.2.25",
+    "gzip-size": "^5.1.1",
+    "jsdoc": "^3.6.6",
+    "jsdoc-api": "^6.0.0",
+    "typescript": "^4.5.4",
+    "vuepress": "^1.9.5",
+    "vuepress-plugin-sitemap": "^2.3.1"
+  },
+  "autoupdate": {
+    "source": "git",
+    "target": "git://github.com/jonobr1/two.js.git",
+    "fileMap": [
+      {
+        "basePath": "build",
+        "files": [
+          "two*.js"
+        ]
+      }
+    ]
+  }
+}

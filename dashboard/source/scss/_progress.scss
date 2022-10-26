@@ -1,0 +1,41 @@
+/*===== PROGRESS BAR =====*/
+.progress-sm {
+  height: 6px;
+}
+
+.progress-md {
+  height: 10px;
+}
+
+.progress-white {
+  background-color: rgba($dark, .1);
+}
+
+
+#nprogress .bar {
+  background: $primary !important;
+}
+
+
+/*===== CIRCLE PROGRESS =====*/
+.circle {
+  position: relative;
+  text-align: center;
+  .circle-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+
+    h6, strong {
+      font-size: 12px;
+    }
+  }
+  &.circle-lg {
+    h2 {
+      font-size: 45px;
+      font-family: $font-family-roboto;
+    }
+  }
+}

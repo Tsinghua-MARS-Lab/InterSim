@@ -1,0 +1,42 @@
+{
+  "name": "gulp-jshint",
+  "description": "JSHint plugin for gulp",
+  "version": "2.1.0",
+  "homepage": "http://github.com/spalger/gulp-jshint",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/spalger/gulp-jshint.git"
+  },
+  "contributors": [
+    "Spencer Alger <email@spalger.com>",
+    "Fractal <contact@wearefractal.com> (http://wearefractal.com/)"
+  ],
+  "main": "./src/index.js",
+  "keywords": [
+    "gulpplugin"
+  ],
+  "dependencies": {
+    "lodash": "^4.12.0",
+    "minimatch": "^3.0.3",
+    "plugin-error": "^0.1.2",
+    "rcloader": "^0.2.2",
+    "through2": "^2.0.0"
+  },
+  "peerDependencies": {
+    "jshint": "2.x"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "jshint": "^2.9.4",
+    "mocha": "^3.0.0",
+    "should": "^11.0.0",
+    "vinyl": "^2.1.0"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,57 @@
+/* ===== Date Range ===== */
+.date-range {
+  cursor: pointer;
+  .date-holder {
+    font-size: 0.875rem;
+    color: $text-color;
+    text-transform: uppercase;
+  }
+  i.mdi.mdi-menu-down {
+    position: relative;
+    &:before {
+      display: inline-block;
+      margin-left: 0.255em;
+      vertical-align: 0.255em;
+      content: "";
+      border-top: 0.3em solid;
+      border-right: 0.3em solid transparent;
+      border-bottom: 0;
+      border-left: 0.3em solid transparent;
+    }
+  }
+  &.date-range-lg {
+    padding-left: 1.625rem;
+    padding-right: 1.625rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    border-radius: 5px;
+    box-shadow: 0px 1px 2px 0px rgba(28, 29, 36, 0.1),inset 0px -1px 0px 0px rgba(229, 230, 235, 0.1);
+    .date-holder {
+      font-size: 1rem;
+      text-transform: capitalize;
+      @include media-breakpoint-up(xl){
+        font-size: 1.375rem;
+      }
+    }
+
+  }
+}
+
+.daterangepicker {
+  &:before,
+  &:after {
+    display: none;
+  }
+  .ranges li.active {
+    background-color: $primary;
+  }
+}
+
+.daterangepicker td.in-range {
+  background-color: rgba($primary, .1);
+}
+
+.daterangepicker td.active, .daterangepicker td.active:hover {
+  background-color: $primary;
+}
+

@@ -1,0 +1,39 @@
+/*===== MODAL =====*/
+.modal {
+  .modal-header {
+    .btn-close-icon,
+    .btn-edit-icon,
+    .btn-dots-icon {
+      font-size: 1.125rem;
+      padding: 0 5px;
+      color: $text-color;
+    }
+  }
+}
+
+/*===== MODAL STOCK =====*/
+.modal-stock {
+  z-index: 1060;
+  .modal-header {
+    .modal-title {
+      font-size: 1.375rem;
+    }
+  }
+  .custom-file {
+    height: 250px;
+    position: relative;
+    border: 1px solid $border-color;
+    .custom-file-input {
+      height: 250px;
+    }
+
+    .upload-image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      widows: 100%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+  }
+}

@@ -1,0 +1,284 @@
+/* ===== Cards ===== */
+/* Card Default */
+.card-default{
+  margin-bottom: 1rem;
+  @include media-breakpoint-up(lg){
+    margin-bottom: 2rem;
+  }
+  .card-header {
+    padding-top: 1.875rem;
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    background-color: transparent;
+    border-bottom: none;
+    flex-wrap: wrap;
+    text-transform: capitalize;
+    h2 {
+      font-size: 1.375rem;
+      color: $dark;
+      &::before {
+        line-height: 1.375rem;
+        margin-right: 0.5rem;
+      }
+    }
+    .btn.mdi {
+      padding: 0.125rem 0.625rem;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      border-radius: 0.2rem;
+      display: flex;
+      align-items: center;
+      border: 1px solid $primary;
+      color: $primary;
+      &:hover {
+        background-color: $primary;
+        color: $white;
+      }
+    }
+    .flex-basis-100 {
+      text-transform: none;
+    }
+  }
+  .horizontal-img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+  .card-body {
+    padding-top: 1rem;
+    padding-bottom: 1.875rem;
+  }
+  .sub-title {
+    color: $dark;
+    flex-basis: 100%;
+  }
+  .card-header-bg {
+    height: 200px;
+    background-position: top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+  }
+}
+
+/* Card Mini */
+.card-mini {
+  margin-bottom: 1rem;
+  @include media-breakpoint-up(sm) {
+    margin-bottom: 105px;
+  }
+  @include media-breakpoint-up(lg) {
+    margin-bottom: 115px;
+  }
+  .card-header {
+    h2 {
+      font-size: 1.625rem;
+    }
+  }
+  .chart-wrapper {
+    @include media-breakpoint-up(sm) {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      padding: 0px 30px;
+    }
+  }
+  .card-body {
+    @include media-breakpoint-up(sm) {
+      height: 62px;
+    }
+  }
+}
+
+
+/* Mini Stataus */
+.mini-status {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  justify-content: space-evenly;
+  @include media-breakpoint-up(lg){
+    align-items: center;
+    justify-content: unset;
+  }
+
+  .text-content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin-right: 1.25rem;
+    .title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      @include media-breakpoint-up(xl){
+        font-size: 0.9375rem;
+      }
+    }
+    .status {
+      font-size: 1.25rem;
+      @include media-breakpoint-up(xl){
+        font-size: 1.625rem;
+      }
+    }
+  }
+
+}
+
+/* Accordion */
+.accordion {
+  .card-header {
+    padding: 0;
+    h2 {
+      width: 100%;
+      .btn {
+        padding-left: 30px;
+        background-color: $primary;
+        color: $white;
+        display: block;
+        width: 100%;
+        text-align: left;
+        position: relative;
+        &.collapsed {
+          background-color: transparent;
+          color: $dark;
+        }
+        &:hover,
+        &:focus {
+          text-decoration: none;
+        }
+        &::after {
+          position: absolute;
+          right: 25px;
+        }
+      }
+      .btn[aria-expanded="false"],
+      a[aria-expanded="false"] {
+        &:after {
+          content: "\f415";
+          font-family: $font-family-icon;
+        }
+      }
+      .btn[aria-expanded="true"],
+      a[aria-expanded="true"] {
+        &:after {
+          content: "\f374";
+          font-family: $font-family-icon;
+        }
+      }
+    }
+  }
+}
+
+/* Accordion Shadow */
+.accordion-shadow {
+  .card {
+    border: 0;
+    box-shadow: 0px 4px 19px 0px rgba(229, 230, 235, 0.6);
+    margin-bottom: 1rem;
+  }
+  .card-header {
+    h2 {
+      .btn {
+        background-color: transparent;
+        color: $primary;
+        &.collapsed {
+          color: $dark;
+        }
+
+      }
+    }
+
+    .btn[aria-expanded="true"],
+    a[aria-expanded="true"] {
+
+      &:after {
+        color: $primary;
+      }
+    }
+  }
+}
+
+.accordion-header-border-bottom {
+  .card {
+    border: 0;
+    margin-bottom: 1rem;
+  }
+  .card-header {
+    border-bottom: 1px solid $border-color;
+    h2 {
+      .btn {
+        background-color: transparent;
+        color: $primary;
+        &.collapsed {
+          color: $dark;
+          border-bottom: 1px solid $border-color;
+        }
+      }
+    }
+
+    .btn[aria-expanded="true"],
+    a[aria-expanded="true"] {
+      &:after {
+        color: $primary;
+      }
+    }
+  }
+}
+
+/* Card Profile */
+.card-profile {
+  .card-profile-body {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0rem;
+    @include media-breakpoint-up(xl){
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 2rem;
+    }
+    .nav-profile-follow {
+      @include media-breakpoint-up(xl){
+        width: 33.33%;
+      }
+    }
+    .profile-avata {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: -6rem;
+      text-align: center;
+
+      @include media-breakpoint-up(xl){
+        width: 33.33%;
+        order: 2;
+      }
+    }
+    .profile-button {
+      @include media-breakpoint-up(xl){
+        width: 33.33%;
+        display: flex;
+        order: 3;
+      }
+      .btn {
+        @include media-breakpoint-up(xl){
+          margin-left: auto;
+        }
+      }
+    }
+
+
+  }
+  .card-profile-footer {
+    padding: 0.625rem 1rem;
+    background-color: $white;
+  }
+}
+

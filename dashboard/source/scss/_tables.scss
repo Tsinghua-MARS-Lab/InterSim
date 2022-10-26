@@ -1,0 +1,104 @@
+/* ===== Tables ===== */
+.table {
+  margin-bottom: 0;
+  thead {
+    th {
+      text-transform: uppercase;
+      color: $dark;
+      border-bottom: 0;
+    }
+  }
+  &.table-dark {
+    thead {
+      th {
+        color: $white;
+      }
+    }
+  }
+}
+
+/* Produc Data Table */
+.table.table-hover {
+  tbody {
+    tr:hover {
+      background-color: $primary;
+      box-shadow: 0px 10px 18px 0px rgba(55, 103, 208, 0.2);
+      td {
+        color: $white;
+      }
+      .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: $white;
+        color: $primary;
+      }
+      .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='#{$primary}' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+      }
+      .icon-burger-mini::before,
+      .card .dropdown .dropdown-toggle {
+        color: $white !important;
+      }
+
+    }
+  }
+}
+
+/* Table Product */
+.table.table-product {
+  th, td {
+    border-top-color: $border-color !important;
+  }
+  thead {
+    th {
+      text-transform: uppercase;
+      color: $dark;
+      border-bottom: none;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+  }
+  tbody {
+    td {
+      padding-left: 18px;
+      padding: 14px 10px;
+      img {
+        border-radius: 5px;
+        max-width: 40px;
+        max-height: 48px;
+      }
+    }
+  }
+
+}
+
+
+/* Table Thead Border */
+.table-thead-border {
+  tr {
+    th {
+      padding-left: 0;
+      padding-right: 0;
+      border-bottom: 1px solid $border-color;
+    }
+    td {
+      padding-left: 0;
+      padding-right: 0;
+      padding-top: 0.9375rem;
+      padding-bottom: 0.9375rem;
+      a {
+        color: $dark;
+        transition: text-decoration .3s ease-in-out;
+        &:hover {
+          color: $primary;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+}
+
+/* TH Width */
+.th-width-250 {
+  width: 250px;
+}

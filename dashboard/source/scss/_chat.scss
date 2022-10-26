@@ -1,0 +1,25 @@
+/*===== CHAT =====*/
+.chat-left-sidebar {
+  margin-bottom: 0;
+  border-bottom-color: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  @include media-breakpoint-up(lg) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-color: $border-color;
+    border-right: 0;
+    margin-bottom: 2rem;
+  }
+}
+
+.chat-right-sidebar {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  @include media-breakpoint-up(lg) {
+    border-top-right-radius: $border-radius;
+    border-bottom-left-radius: 0;
+  }
+}

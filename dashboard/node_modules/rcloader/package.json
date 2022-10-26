@@ -1,0 +1,40 @@
+{
+  "name": "rcloader",
+  "version": "0.2.2",
+  "description": "For build system plugins that need to fetch relative config files (like .jshintrc).",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:spenceralger/rcloader.git"
+  },
+  "keywords": [
+    "find",
+    "rcfile",
+    "rc",
+    "search",
+    "defaults",
+    "config"
+  ],
+  "author": "Spencer Alger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/spenceralger/rcloader/issues"
+  },
+  "homepage": "https://github.com/spenceralger/rcloader",
+  "dependencies": {
+    "lodash.assign": "^4.2.0",
+    "lodash.isobject": "^3.0.2",
+    "lodash.merge": "^4.6.0",
+    "rcfinder": "^0.1.6"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "should": "^4.6.2"
+  },
+  "engines": {
+    "node": ">= 0.10"
+  }
+}

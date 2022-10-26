@@ -1,0 +1,111 @@
+/*===== BREADCRUMB  =====*/
+.breadcrumb {
+  border: 1px solid $border-color;
+  &.breadcrumb-inverse {
+    border: 1px solid $primary;
+    background-color: rgba($primary, .2);
+    .breadcrumb-item,
+    .breadcrumb-item.active {
+      color: $primary;
+    }
+    .breadcrumb-item::before {
+      color: $primary;
+    }
+  }
+
+  &.breadcrumb-primary {
+    border-color: $primary;
+    background-color: $primary;
+    .breadcrumb-item, .breadcrumb-item a {
+      color: $white;
+    }
+    .breadcrumb-item:before {
+      color: $white;
+    }
+  }
+
+  &.breadcrumb-secondary {
+    border-color: $secondary;
+    background-color: $secondary;
+    .breadcrumb-item, .breadcrumb-item a {
+      color: $white;
+    }
+    .breadcrumb-item:before {
+      color: $white;
+    }
+  }
+
+  &.breadcrumb-success {
+    border-color: $success;
+    background-color: $success;
+    .breadcrumb-item, .breadcrumb-item a {
+      color: $white;
+    }
+    .breadcrumb-item:before {
+      color: $white;
+    }
+  }
+
+  &.breadcrumb-danger {
+    border-color: $danger;
+    background-color: $danger;
+    .breadcrumb-item, .breadcrumb-item a {
+      color: $white;
+    }
+    .breadcrumb-item:before {
+      color: $white;
+    }
+  }
+
+  &.breadcrumb-warning {
+    border-color: $warning;
+    background-color: $warning;
+    .breadcrumb-item, .breadcrumb-item a {
+      color: $white;
+    }
+    .breadcrumb-item:before {
+      color: $white;
+    }
+  }
+
+  &.breadcrumb-info {
+    border-color: $info;
+    background-color: $info;
+    .breadcrumb-item, .breadcrumb-item a {
+      color: $white;
+    }
+    .breadcrumb-item:before {
+      color: $white;
+    }
+  }
+
+  &.breadcrumb-light {
+    border-color: $light;
+    background-color: $light;
+    .breadcrumb-item, .breadcrumb-item a {
+      color: $dark;
+    }
+    .breadcrumb-item:before {
+      color: $dark;
+    }
+  }
+
+  &.breadcrumb-dark {
+    border-color: $dark;
+    background-color: $dark;
+    .breadcrumb-item, .breadcrumb-item a {
+      color: $white;
+    }
+    .breadcrumb-item:before {
+      color: $white;
+    }
+  }
+
+}
+
+
+.breadcrumb-item+.breadcrumb-item::before {
+  content: '\f142';
+  font-family: $font-family-icon;
+}
+

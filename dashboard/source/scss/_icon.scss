@@ -1,0 +1,17 @@
+/*===== ICONS =====*/
+.icon-sm {
+  font-size: 2rem;
+  line-height: 2rem;
+}
+
+.icon-md  {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    font-size: 1.5rem;
+
+    i {
+      line-height: 70px;
+      color: $white;
+    }
+  }

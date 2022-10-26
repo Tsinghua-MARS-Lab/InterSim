@@ -1,0 +1,29 @@
+/*===== INPUTS GROUP CHART =====*/
+.input-group-chat {
+  padding: 1.25rem;
+  .emoticon-icon {
+    border: 1px solid $border-color;
+    border-right-color: transparent;
+    line-height: 45px;
+    padding-left: 0.625rem;
+    border-top-left-radius: .25rem;
+    border-bottom-left-radius: .25rem;
+    font-size: 1.3125rem;
+    &::after {
+      display: none;
+    }
+  }
+  .form-control {
+    border-color: $border-color;
+    border-left-color: transparent;
+    height: 3.125rem;
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .dropdown-menu.show {
+    top: auto !important;
+    bottom: 69px;
+    left: 20px;
+  }
+}

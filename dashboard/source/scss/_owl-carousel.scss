@@ -1,0 +1,118 @@
+/*===== OWL CAROUSEL =====*/
+.owl-carousel {
+  .single-item {
+    img {
+      min-height: 180px;
+      @include media-breakpoint-up(lg){
+        min-height: auto;
+      }
+    }
+  }
+}
+
+.owl-theme {
+  position: relative;
+  .owl-nav {
+    font-size: 40px;
+    color: $white;
+
+    .owl-next,
+    .owl-prev {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      &:hover {
+        background-color: rgba($black, .5) !important;
+      }
+    }
+    .owl-next {
+      right: 0;
+    }
+    .owl-prev {
+      left: 0;
+    }
+  }
+
+  .owl-dots {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    @include media-breakpoint-up(xl){
+      bottom: 20px;
+    }
+    .owl-dot {
+      span {
+        width: 25px;
+        height: 3px;
+        border-radius: 0px;
+        background-color: rgba($white, .6);
+        @include media-breakpoint-up(md) {
+          width: 35px;
+          height: 3px;
+        }
+      }
+      &.active {
+        span {
+          background-color: $white;
+        }
+      }
+    }
+  }
+  &.carousel-user {
+    .owl-nav {
+      color: $text-color;
+      .owl-next,
+      .owl-prev {
+        top: 40%;
+        transform: translateY(-40%);
+      }
+      .owl-prev {
+        @include media-breakpoint-up(xl){
+          left: -100px;
+        }
+      }
+      .owl-next {
+        @include media-breakpoint-up(xl){
+          right: -100px;
+        }
+
+      }
+    }
+    .owl-item img {
+      width: 210px;
+      margin: 0 auto;
+      @include media-breakpoint-up(md){
+        width: 150px;
+      }
+      @include media-breakpoint-up(xl){
+        width: 210px;
+      }
+    }
+  }
+}
+
+/* Carousel Caption */
+.carousel-caption {
+  position: absolute;
+  top: 35%;
+  transform: translateY(-40%);
+  right: 15%;
+  bottom: 50px;
+  left: 15%;
+  z-index: 10;
+  color: #ffffff;
+  text-align: center;
+  @include media-breakpoint-up(lg){
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/* Carousel Testimonial */
+.carousel-testimonial {
+  .owl-item img {
+    width: 100px;
+    margin: 0 auto;
+  }
+}

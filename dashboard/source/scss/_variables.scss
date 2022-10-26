@@ -1,0 +1,187 @@
+// Breakpoints
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1500px
+);
+
+// Spacer
+$spacer: 1rem !default;
+$spacers: (
+  (
+    0: 0,
+    1: ($spacer * .3125),
+    2: ($spacer * .625),
+    3: $spacer * .9375,
+    4: ($spacer * 1.25),
+    5: ($spacer * 1.5625),
+    6: ($spacer * 1.875),
+    7: ($spacer * 3.125),
+    8: ($spacer * 4.0625)
+  )
+);
+
+// Color system
+
+$gray-100: #f5f6fa !default;
+$gray-200: #f0f1f5 !default;
+$gray-300: #b6bdca !default;
+$gray-900: #2f2f2f !default;
+
+// Colors
+$primary:                   #008096 !default;
+$dark:                      #31343d !default;
+$secondary:                 #0DC99D !default;
+$border-color:              #e5e9f2 !default;
+$success:                   #0acb8e !default;
+$info:                      #04c7e0 !default;
+$warning:                   #fec400 !default;
+$danger:                    #fe5461 !default;
+$white:                     #ffffff !default;
+$text-color:                #8a909d !default;
+$black-russian:             #1d1f26 !default;
+$white-light:               #bfc7d9 !default;
+$gray:                      #b6bdca !default;
+$cyan:                      #6493fa !default;
+$smoke:                       $text-color;
+$light:                       $gray-200;
+
+$facebook:                  #3b5999 !default;
+$twitter:                   #55acee !default;
+$google-plus:               #dd4b39 !default;
+$linkedin:                  #0077b5 !default;
+$pinterest:                 #bd081c !default;
+$tumblr:                    #34465d !default;
+$vimeo:                     #00b489 !default;
+$dropbox:                   #007ee5 !default;
+$dribbble:                  #ea4c89 !default;
+$skype:                     #00aff0 !default;
+
+$theme-colors: (
+  (
+    "primary":                $primary,
+    "secondary":              $secondary,
+    "success":                $success,
+    "info":                   $info,
+    "warning":                $warning,
+    "danger":                 $danger,
+    "light":                  $light,
+    "dark":                   $dark,
+    "info-dark":              $cyan,
+    "smoke":                  $smoke
+  )
+);
+
+//Body
+$body-bg:                      $light !default;
+
+$body-color:                   $text-color !default;
+
+//Border radius
+
+$border-radius: .25rem !default;
+
+// Fonts
+
+$font-family-karla:             'Karla', sans-serif !default;
+$font-family-roboto:            'Roboto', sans-serif !default;
+$font-family-matetial-icon:     'Material Design Icons' !default;
+
+$font-family-base:              $font-family-karla !default;
+$font-family-icon:              $font-family-matetial-icon !default;
+
+$font-size-base:                0.9375rem !default;
+$font-size-sm:                  ($font-size-base * .8) !default;
+$font-weight-medium:            500 !default;
+
+
+//Heading
+
+$headings-margin-bottom:        0 !default;
+$h6-font-size:                  $font-size-base * 1.07 !default;
+$headings-color:                $dark;
+
+// Type display classes
+$display4-size:                 2rem !default;
+
+// Alerts
+
+$alert-bg-level:                    0 !default;
+$alert-border-level:                0 !default;
+$alert-color-level:                 -10 !default;
+
+// Badges
+
+$badge-font-size:                   80% !default;
+$badge-padding-y:                   0.3em !default;
+$badge-padding-x:                   0.84em !default;
+
+// Breadcrumbs
+
+$breadcrumb-bg:                     transparent !default;
+$breadcrumb-active-color:           $text-color;
+
+//Buttons + Inputs
+$input-btn-padding-y:               .56rem !default;
+$input-btn-padding-x:               1.5rem !default;
+
+$input-btn-padding-y-sm:            .125rem !default;
+$input-btn-padding-x-sm:            .625rem !default;
+
+$input-btn-padding-y-lg:            .65rem !default;
+$input-btn-padding-x-lg:            1.5rem !default;
+
+$input-btn-focus-color:             transparent !default;
+
+
+// Inputs
+
+$input-padding-x:                 1rem !default;
+$input-border-color:                $border-color !default;
+$input-btn-font-size-sm:            $font-size-sm !default;
+
+
+// Cards
+
+$card-border-color:           $border-color !default;
+$card-spacer-x:               1.875rem !default;
+
+//Table
+
+// Progress bars
+
+$progress-bg:                       $gray-200 !default;
+
+// Pagination
+
+$pagination-padding-y:              1rem !default;
+$pagination-padding-x:              1.3125rem !default;
+$pagination-border-color:           $border-color;
+
+
+// Popovers
+$popover-font-size:                  0.8125rem !default;
+$popover-bg:                        $black-russian !default;
+$popover-header-bg:                 $black-russian !default;
+$popover-header-color:              $white !default;
+$popover-body-color:                $white !default;
+$popover-arrow-outer-color:         $black-russian !default;
+$popover-border-color:              $black-russian !default;
+
+// Navs
+$nav-tabs-link-active-bg:           $white !default;
+$nav-tabs-link-active-color:        $primary !default;
+$nav-tabs-border-color:             $border-color;
+$nav-tabs-link-active-border-color: $border-color $border-color $white !default;
+
+$nav-pills-border-radius:           2rem !default;
+$nav-pills-link-active-bg:          $primary !default;
+
+// Code
+
+$code-font-size:                    100% !default;
+$code-color:                        $primary !default;
+

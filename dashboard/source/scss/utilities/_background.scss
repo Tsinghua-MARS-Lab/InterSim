@@ -1,0 +1,88 @@
+//background Opacity
+.bg-warning-10 {
+  background-color: rgba($warning, 0.1);
+}
+
+//Overlay Default
+.bg-overlay-primary,
+.bg-overlay-secondary,
+.bg-overlay-success,
+.bg-overlay-danger,
+.bg-overlay-warning,
+.bg-overlay-info,
+.bg-overlay-light,
+.bg-overlay-dark {
+  position: relative;
+  border-radius: 5px;
+  &::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: '';
+  }
+}
+
+.bg-overlay-primary {
+  &::before {
+    background-color: rgba($primary, .9);
+  }
+}
+.bg-overlay-secondary {
+  &::before {
+    background-color: rgba($secondary, .9);
+  }
+}
+.bg-overlay-success {
+  &::before {
+    background-color: rgba($success, .9);
+  }
+}
+.bg-overlay-danger {
+  &::before {
+    background-color: rgba($danger, .9);
+  }
+}
+.bg-overlay-warning {
+  &::before {
+    background-color: rgba($warning, .9);
+  }
+}
+.bg-overlay-info {
+  &::before {
+    background-color: rgba($info, .9);
+  }
+}
+.bg-overlay-light {
+  &::before {
+    background-color: rgba($light, .9);
+  }
+}
+.bg-overlay-dark {
+  &::before {
+    background-color: rgba($dark, .9);
+  }
+}
+
+.bg-overlay-black-40 {
+  position: relative;
+  &::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: '';
+    background-color: rgba($black, .4);
+  }
+  &.rounded {
+    &::before {
+      border-radius: 0.25rem;
+    }
+  }
+}

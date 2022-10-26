@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+
+<!--
+ // WEBSITE: https://themefisher.com
+ // TWITTER: https://twitter.com/themefisher
+ // FACEBOOK: https://www.facebook.com/themefisher
+ // GITHUB: https://github.com/themefisher/
+-->
+
+<html lang="en" dir="ltr">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>InterSim - The Best Behaviour Simulator for Safe L3+ Autonomous Driving</title>
+
+  <!-- GOOGLE FONTS -->
+  <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto" rel="stylesheet">
+  <link href="plugins/material/css/materialdesignicons.min.css" rel="stylesheet" />
+  <link href="plugins/simplebar/simplebar.css" rel="stylesheet" />
+
+  <!-- PLUGINS CSS STYLE -->
+  <link href="plugins/nprogress/nprogress.css" rel="stylesheet" />
+  <link href="plugins/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css" rel="stylesheet" />
+  <link href="plugins/jvectormap/jquery-jvectormap-2.0.3.css" rel="stylesheet" />
+  <link href="plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link href="plugins/toaster/toastr.min.css" rel="stylesheet" />
+  <!-- MONO CSS -->
+  <link id="main-css-href" rel="stylesheet" href="css/style.css" />
+  <!-- FAVICON -->
+  <link href="images/favicon.png" rel="shortcut icon" />
+
+  <!--
+    HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
+  -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <script src="plugins/nprogress/nprogress.js"></script>
+</head>
+
+
+  <body class="navbar-fixed sidebar-fixed" id="body">
+    <script>
+      NProgress.configure({ showSpinner: false });
+      NProgress.start();
+    </script>
+
+    
+    <!-- <div id="toaster"></div> -->
+    
+
+    <!-- ====================================
+    ——— WRAPPER
+    ===================================== -->
+    <div class="wrapper">
+      
+      
+        <!-- ====================================
+          ——— LEFT SIDEBAR WITH OUT FOOTER
+        ===================================== -->
+        <aside class="left-sidebar sidebar-dark" id="left-sidebar">
+          <div id="sidebar" class="sidebar">
+            <!-- Aplication Brand -->
+            <div class="app-brand">
+              <a href="/index.html">
+                <img class="mr-2" src="images/logo.png" alt="InterSim">
+                <span class="brand-name"> <img src="images/logo_text.png" alt="InterSim"> </span>
+                <!-- <span class="brand-name"><strong>InterSim</strong></span> -->
+              </a>
+            </div>
+            <!-- begin sidebar scrollbar -->
+            <div class="sidebar-left" data-simplebar style="height: 100%;">
+              <!-- sidebar menu -->
+              <ul class="nav sidebar-inner" id="sidebar-menu">
+                  <li class="active">
+                    <a class="sidenav-item-link" href="index.html">
+                      <i class="mdi mdi-home-variant-outline"></i>
+                      <span class="nav-text">Simulations</span>
+                    </a>
+                  </li>
+
+                  <!-- <li>
+                    <a class="sidenav-item-link" href="analytics.html">
+                      <i class="mdi mdi-console"></i>
+                      <span class="nav-text">Console & Notebook</span>
+                    </a>
+                  </li> -->
+                
+                  <li>
+                    <a class="sidenav-item-link" href="list.html">
+                      <i class="mdi mdi-chart-line"></i>
+                      <span class="nav-text">Results & Summary</span>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a class="sidenav-item-link" href="visualization-detail.html">
+                      <i class="mdi mdi-map"></i>
+                      <span class="nav-text">Visualizations</span>
+                    </a>
+                  </li>
+                  
+                  <!-- <li>
+                    <a class="sidenav-item-link" href="visualization-online.html">
+                      <i class="mdi mdi-hand"></i>
+                      <span class="nav-text">Online Simulation</span>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a class="sidenav-item-link" href="user-profile.html">
+                      <i class="mdi mdi-account"></i>
+                      <span class="nav-text">User Profile</span>
+                    </a>
+                  </li>                 -->
+              </ul>
+            </div>
+          </div>
+        </aside>
+
+      
+
+      <!-- ====================================
+      ——— PAGE WRAPPER
+      ===================================== -->
+      <div class="page-wrapper">
+        
+          <!-- Header -->
+          <header class="main-header" id="header">
+            <nav class="navbar navbar-expand-lg navbar-light" id="navbar">
+              <!-- Sidebar toggle button -->
+              <button id="sidebar-toggler" class="sidebar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+              </button>
+
+              <span class="page-title">Simulations</span>
+
+              <div class="navbar-right ">
+
+                <a class="dropdown-link-item mr-5" href="https://www.linkedin.com/in/qiao-sun/" target="_blank">
+                  <span class="nav-text">Qiao Sun &#64 Shanghai QiZhi</span>
+                </a>
+
+                <!-- <span herf="#www.bing.com" class="d-none d-lg-inline-block mr-5">Qiao Sun &#64 Shanghai QiZhi</span> -->
+              </div>
+            </nav>
+          </header>
+
+        <!-- ====================================
+        ——— CONTENT WRAPPER
+        ===================================== -->
+        <div class="content-wrapper">
+          <div class="content">     
+
+            <!--
+            <div class="row">
+              <div class="col-12">       
+                <div class="card card-default">
+                  <div class="card-header">
+                    <h2>Private Leaderboards</h2>
+                    <a href="#" class="text-uppercase">Official Webpage</a>
+                  </div>
+                  <div class="card-body">
+                    <div class="border p-6">
+                      <ul class="nav nav-underline-active-primary mb-3" id="pills-tab2" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link active" id="nav-private-tab" data-toggle="pill" href="#nav-tabs-private" role="tab"
+                            aria-controls="nav-tabs" aria-selected="true">8s Waymo</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="nav-private-tab2" data-toggle="pill" href="#nav-tabs-private2" role="tab"
+                            aria-controls="nav-tabs2" aria-selected="false">8s NuPlan-Boston</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="nav-public-tab" data-toggle="pill" href="#nav-tabs-public" role="tab"
+                          aria-controls="nav-tabs2" aria-selected="false">8s NuPlan-Pittsburgh</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="nav-public2-tab" data-toggle="pill" href="#nav-tabs-public2" role="tab"
+                          aria-controls="nav-tabs2" aria-selected="false">8s NuPlan-Singapore</a>
+                        </li>
+                      </ul>
+                      <div class="tab-content mt-5" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-tabs-private" role="tabpanel" aria-labelledby="nav-private-tab">
+                          <table id="leaderboardTable" class="table table-product" style="width:100%">
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Score</th>
+                                <th>Collision</th>
+                                <th>Progress</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+      
+                              <tr>
+                                <td>InterPlan_WaymoInterVal_AlwaysYield_0810</td>
+                                <td>15.02</td>
+                                <td>0.159 &#37</td>
+                                <td>10.59 m</td>
+                              </tr>
+      
+                              <tr>
+                                <td>InterPlan_WaymoInterVal_M2I_0816</td>
+                                <td>30.25</td>
+                                <td>0.061 &#37</td>
+                                <td>17.91 m</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-tabs-private2" role="tabpanel" aria-labelledby="nav-private-tab2">
+                          <table id="leaderboardTable2" class="table table-product" style="width:100%">
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Score</th>
+                                <th>Finish Rate</th>
+                                <th>Finish Time</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>InterPlan_WaymoInterVal_RpTr_0816</td>
+                                <td>15.02</td>
+                                <td>0.159 &#37</td>
+                                <td>10.59 m</td>
+                              </tr>
+      
+                              <tr>
+                                <td>InterPlan_WaymoInterVal_RpTr_0816</td>
+                                <td>30.25</td>
+                                <td>0.159 &#37</td>
+                                <td>10.59 m</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-tabs-public" role="tabpanel" aria-labelledby="nav-public-tab">
+                          <table id="leaderboardTable3" class="table table-product" style="width:100%">
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Score</th>
+                                <th>Collision</th>
+                                <th>Progress</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+      
+                              <tr>
+                                <td>InterPlan_WaymoInterVal_RpTr_0816</td>
+                                <td>15.02</td>
+                                <td>0.159 &#37</td>
+                                <td>10.59 m</td>
+                              </tr>
+      
+                              <tr>
+                                <td>InterPlan_WaymoInterVal_RpTr_0816</td>
+                                <td>30.25</td>
+                                <td>0.159 &#37</td>
+                                <td>10.59 m</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-tabs-public2" role="tabpanel" aria-labelledby="nav-public-tab2">
+                          <table id="leaderboardTable4" class="table table-product" style="width:100%">
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Score</th>
+                                <th>Finish Rate</th>
+                                <th>Finish Time</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>InterPlan_WaymoInterVal_RpTr_0816</td>
+                                <td>15.02</td>
+                                <td>0.159 &#37</td>
+                                <td>10.59 m</td>
+                              </tr>
+      
+                              <tr>
+                                <td>InterPlan_WaymoInterVal_RpTr_0816</td>
+                                <td>30.25</td>
+                                <td>0.159 &#37</td>
+                                <td>10.59 m</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                         <div class="tab-pane fade" id="nav-profile2" role="tabpanel" aria-labelledby="nav-profile-tab">
+                          Accusamus cumque unde autem asperiores voluptatem aut quidem cum. Ullam quas alias repellat ipsum
+                          exercitationem
+                          blanditiis explicabo, distinctio qui nam, omnis nisi suscipit ipsa, magnam aperiam? Recusandae at, quae rem
+                          quaerat
+                          officiis perferendis hic? Pariatur minima iusto voluptate qui.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            -->
+
+            <!-- <div class="row">
+              <div class="col-12">       
+
+                <div class="card card-default">
+                  <div class="card-header">
+                    <h2>Create a New Simulation</h2>
+                  </div>
+    
+                  <div class="card-body">
+
+                    <div class="row">
+
+                      <div class="col-xl-6">
+                        
+                        <label for="exampleFormControlInput3">Simulation Name</label>
+                        <input class="form-control my-1 mb-3" id="exampleFormControlInput3" placeholder="Name of This Simulation">
+                        
+                        <label class="text-dark w-100">Select a Task</label>
+                        <select class="custom-select my-1 mb-3" id="inlineFormCustomSelectPref">
+                          <option selected>Choose...</option>
+                          <option value="1">8s Planning</option>
+                          <option value="2">Long-Term Planning</option>
+                        </select>
+
+                      </div>
+
+                      <div class="col-xl-6">
+                        <label class="text-dark w-100">Select a Dataset</label>
+                        <select class="custom-select my-1 mb-3" id="inlineFormCustomSelectPref">
+                          <option selected>Choose...</option>
+                          <option value="1">WOMD(Waymo)</option>
+                          <option value="2">WOMD(Waymo)-Interactive/Val</option>
+                          <option value="3">WOMD(Waymo)-Interactive/Training</option>
+                          <option value="4">NuPlan-Mini</option>
+                          <option value="5">NuPlan-Vegas</option>
+                          <option value="6">NuPlan-Singapore</option>
+                          <option value="7">NuPlan-Boston</option>
+                          <option value="8">NuPlan-Pittsburgh</option>
+                        </select>
+        
+                        <label class="text-dark w-100">Select a Planner</label>
+                        <select class="custom-select my-1 mb-3" id="inlineFormCustomSelectPref">
+                          <option selected>Choose...</option>
+                          <option value="1">InterPlan-Demo</option>
+                          <option value="2">IL</option>
+                          <option value="3">BC</option>
+                          <option value="4">LazyDummy</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <a href="#" class="btn btn-primary btn-pill" data-toggle="modal" data-target="#modal-stock">New Simulation</a>
+                    </div>
+                  </div>
+                </div>
+              </div>                  
+            </div> -->
+
+            <!-- Table Product -->
+            <div class="row">
+              <div class="col-12">
+                
+                <div class="card card-default">
+                  <!-- <div class="card-header align-items-left"></div> -->
+                  <div class="card-header">
+                    <h2>Launched Simulations</h2>
+                    <div class="dropdown">
+                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false"> All
+                      </a>
+
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#">Running</a>
+                        <a class="dropdown-item" href="#">Stopped</a>
+                        <a class="dropdown-item" href="#">Done</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card-body">
+                    <table id="productsTable" class="table table-product" style="width:100%">
+                      <thead>
+                        <tr>
+                          <th>Method</th>
+                          <th>Task</th>
+                          <th>Dataset</th>
+                          <th>Planner</th>
+                          <th>Pred.</th>
+                          <th>Status</th>
+                          <th>Start Time</th>
+                          <th>End Time</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody id="scenario_list_body">
+                        <tr>
+                          <td>InterPlan_0816</td>
+                          <td>8s</td>
+                          <td>Waymo-Inter_Val</td>
+                          <td>InterPlan-Demo</td>
+                          <td>M2I</td>
+                          <td>Running</td>
+                          <td>2022-08-16</td>
+                          <td>2022-08-16</td>
+                          <!-- <td>
+                            <div id="tbl-chart-01"></div>
+                          </td> -->
+                          <!-- <td>
+                            <div class="progress progress-md rounded-0">
+                              <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="70%" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td> -->
+                          <td>
+                            <div class="dropdown">
+                              <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                              </a>
+                              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="#">Stop</a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+              <!-- Stock Modal -->
+              <div class="modal fade modal-stock" id="modal-stock" aria-labelledby="modal-stock" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                  <form action="#">
+                    <div class="modal-content">
+                      <div class="modal-header align-items-center p3 p-md-5">
+                        <h2 class="modal-title" id="exampleModalGridTitle">Create a New Simulation</h2>
+                        <div>
+                          <button type="button" class="btn btn-light btn-pill mr-1 mr-md-2" data-dismiss="modal"> cancel </button>
+                          <button type="submit" class="btn btn-primary  btn-pill" data-dismiss="modal"> add & run </button>
+                        </div>
+
+                      </div>
+                      <div class="modal-body p3 p-md-5">
+                        <div class="row">
+                          <div class="col-lg-8">
+                            <div class="form-group mb-5">
+                              <label for="new-product">Simulation Name</label>
+                                <a tabindex="0" class="mdi mdi-comment-question-outline" role="button" data-toggle="popover" data-trigger="focus"
+                                  title="How should I name a simulation?" data-content="Simulation names are used to mark each simulation. This will also be the name of the simulation result folder for downloads."></a>
+                              <input type="text" class="form-control" id="new-product">
+                            </div>
+
+
+                            <div class="form-row mb-4">
+                              <div class="col">
+                                <label for="price">Price</label>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">$</span>
+                                  </div>
+                                  <input type="text" class="form-control" id="price" placeholder="Price" aria-label="Price"
+                                    aria-describedby="basic-addon1">
+                                </div>
+                              </div>
+                              <div class="col">
+                                <label for="sale-price">Sale Price</label>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">$</span>
+                                  </div>
+                                  <input type="text" class="form-control" id="sale-price" placeholder="Sale Price" aria-label="SalePrice"
+                                    aria-describedby="basic-addon1">
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="product-type mb-3 ">
+                              <label class="d-block" for="sale-price">Product Type <i class="mdi mdi-help-circle-outline"></i> </label>
+                              <div>
+
+                                <div class="custom-control custom-radio d-inline-block mr-3 mb-3">
+                                  <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" checked="checked">
+                                  <label class="custom-control-label" for="customRadio1">Physical Good</label>
+                                </div>
+
+                                <div class="custom-control custom-radio d-inline-block mr-3 mb-3">
+                                  <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
+                                  <label class="custom-control-label" for="customRadio2">Digital Good</label>
+                                </div>
+
+                                <div class="custom-control custom-radio d-inline-block mr-3 mb-3">
+                                  <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input">
+                                  <label class="custom-control-label" for="customRadio3">Service</label>
+                                </div>
+
+                              </div>
+                            </div>
+
+                            <div class="editor">
+                              <label class="d-block" for="sale-price">Description <i class="mdi mdi-help-circle-outline"></i></label>
+                              <div id="standalone">
+                                <div id="toolbar">
+                                  <span class="ql-formats">
+                                    <select class="ql-font"></select>
+                                    <select class="ql-size"></select>
+                                  </span>
+                                  <span class="ql-formats">
+                                    <button class="ql-bold"></button>
+                                    <button class="ql-italic"></button>
+                                    <button class="ql-underline"></button>
+                                  </span>
+                                  <span class="ql-formats">
+                                    <select class="ql-color"></select>
+                                  </span>
+                                  <span class="ql-formats">
+                                    <button class="ql-blockquote"></button>
+                                  </span>
+                                  <span class="ql-formats">
+                                    <button class="ql-list" value="ordered"></button>
+                                    <button class="ql-list" value="bullet"></button>
+                                    <button class="ql-indent" value="-1"></button>
+                                    <button class="ql-indent" value="+1"></button>
+                                  </span>
+                                  <span class="ql-formats">
+                                    <button class="ql-direction" value="rtl"></button>
+                                    <select class="ql-align"></select>
+                                  </span>
+                                </div>
+                              </div>
+                              <div id="editor"></div>
+
+                              <div class="custom-control custom-checkbox d-inline-block mt-2">
+                                <input type="checkbox" class="custom-control-input" id="customCheck2">
+                                <label class="custom-control-label" for="customCheck2">Hide product from published site</label>
+                              </div>
+
+                            </div>
+
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="custom-file">
+                              <input type="file" class="custom-file-input" id="customFile" placeholder="please imgae here">
+                              <span class="upload-image">Click here to <span class="text-primary">add product image.</span> </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </form>
+                </div>
+              </div>
+</div>
+          
+        </div>
+        
+          <!-- Footer -->
+          <footer class="footer mt-auto">
+            <div class="copyright bg-white">
+              <p>
+                &copy; <span id="copy-year"></span> Copyright InterSim by <a class="text-primary" href="mailto: alan.qiao.sunATgmail.com" target="_blank" >Qiao Sun</a>.
+              </p>
+            </div>
+            <script>
+                var d = new Date();
+                var year = d.getFullYear();
+                document.getElementById("copy-year").innerHTML = year;
+            </script>
+          </footer>
+
+      </div>
+    </div>
+    
+    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="plugins/simplebar/simplebar.min.js"></script>
+    <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
+    <script src="plugins/apexcharts/apexcharts.js"></script>
+    <script src="plugins/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="plugins/jvectormap/jquery-jvectormap-2.0.3.min.js"></script>
+    <script src="plugins/jvectormap/jquery-jvectormap-world-mill.js"></script>
+    <script src="plugins/jvectormap/jquery-jvectormap-us-aea.js"></script>
+    <script src="plugins/daterangepicker/moment.min.js"></script>
+    <script src="plugins/daterangepicker/daterangepicker.js"></script>
+    <script>
+      jQuery(document).ready(function() {
+        jQuery('input[name="dateRange"]').daterangepicker({
+        autoUpdateInput: false,
+        singleDatePicker: true,
+        locale: {
+          cancelLabel: 'Clear'
+        }
+      });
+        jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+          jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+        });
+        jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+          jQuery(this).val('');
+        });
+      });
+    </script>
+    
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script src="plugins/toaster/toastr.min.js"></script>
+
+    
+    
+    <script src="js/mono.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/custom.js"></script>
+    <!--  -->
+
+    <script>
+      var getDOM = function (index, callback){
+        // Creating a XHR object
+        let xhr = new XMLHttpRequest();
+        let url = "http://127.0.0.1:5000/list_scenarios?index=" + String(index);
+        // open a connection
+        xhr.open("GET", url, true);
+        // Set the request header i.e. which type of content you are sending
+        // xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.responseType = 'html';
+        xhr.onload = function() {
+          var status = xhr.status;
+          if (status === 200) {
+            callback(null, xhr.response);
+          } else {
+            callback(status, xhr.response);
+          }
+        };
+        xhr.send();
+      }
+
+      getDOM(0,  function(err, data) {
+        if (err != null) {
+            console.error('Something went wrong: ' + err);
+        } else {
+          document.getElementById("scenario_list_body").innerHTML = data;
+        }
+      });
+
+      </script>
+  </body>
+</html>

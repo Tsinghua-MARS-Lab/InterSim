@@ -1,0 +1,49 @@
+/*===== CUSTOM GRID =====*/
+/* Body */
+#body {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Wrapper */
+.wrapper {
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Page Wrapper */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Content */
+.content {
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100%;
+  @include media-breakpoint-up(lg) {
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 1.9rem;
+    padding-left: 1.875rem;
+    padding-right: 1.875rem;
+  }
+  @include media-breakpoint-up(xl) {
+    padding-top: 2.5rem;
+    padding-bottom: .625rem;
+  }
+}

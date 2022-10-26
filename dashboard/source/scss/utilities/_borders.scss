@@ -1,0 +1,18 @@
+/* Border Right md */
+.border-right-md {
+  @include media-breakpoint-up(md){
+    border-right: 1px solid $border-color !important;
+  }
+}
+
+/* Border Right lg */
+.border-right-lg {
+  @include media-breakpoint-up(lg){
+    border-right: 1px solid $border-color !important;
+  }
+}
+
+/* Flex-basis */
+.flex-basis-100 {
+   flex-basis: 100%;
+ }

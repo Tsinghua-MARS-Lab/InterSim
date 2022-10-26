@@ -1,0 +1,127 @@
+/* ===== DROPDOWN ===== */
+/* Dropdown Toggle icon mini-burger */
+.icon-burger-mini {
+  &:after {
+    display: none;
+  }
+  &:before {
+    font-family: "Material Design Icons";
+    content: "\F1D9";
+    color: $gray-300;
+  }
+  font-size: 1.5rem;
+}
+
+/* Card Header Dropdown */
+.card-header {
+  .dropdown {
+    .dropdown-toggle {
+      color: $text-color;
+    }
+  }
+}
+
+
+/* Chat Dropdown Status */
+.dropdown-chat-state {
+  .dropdown-toggle {
+    color: $white;
+    &::after {
+      display: none;
+    }
+  }
+  .btn {
+    box-shadow: none;
+    color: $white !important;
+    padding: 0;
+    i {
+      font-size: 1.25rem;
+    }
+    &.btn-rounded-circle {
+      width: 36px;
+      height: 36px;
+      line-height: 1;
+      padding: 0;
+    }
+  }
+  .dropdown-menu {
+    width: 250px;
+    min-height: 0px;
+    max-height: 170px;
+    overflow-y: scroll;
+    top: 40px;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: $white;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(153, 153, 153, .4);
+      border-radius: 30px;
+    }
+
+
+  }
+  .user-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+    color: $text-color;
+    img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+    .username {
+      margin-right: auto;
+      text-transform: capitalize;
+    }
+    .state {
+      &.active {
+        i {
+          font-size: 1.375rem;
+          color: $primary;
+        }
+      }
+      font-size: 12px;
+      font-style: italic;
+    }
+  }
+}
+
+/* Chat Dropdown */
+.chat-dropdown {
+ .dropdown-menu {
+   width: 100%;
+    overflow-y: unset;
+    max-height: unset;
+  }
+}
+
+/* Dropdown Menu Search */
+.dropdown-menu-search {
+  border-bottom-left-radius: .5rem;
+  border-bottom-right-radius: .5rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  width: 100% !important;
+  margin-top: -1px !important;
+  .nav-item.active {
+    background-color: $primary;
+    .nav-link {
+      color: $white;
+    }
+    &:last-child{
+      border-bottom-left-radius: .5rem ;
+      border-bottom-right-radius: .5rem ;
+    }
+  }
+  .nav-link {
+    padding: 0.5rem 1.25rem !important;
+  }
+}
