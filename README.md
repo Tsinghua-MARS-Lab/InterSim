@@ -129,6 +129,12 @@ Try to run the simulation again, now InterSim should you your new planner instea
 
 `python sim.py --max_scenarios 5`
 
+### Using default relation predictor
+
+InterSim leverages a pretrained default relation predictor by default. You can turn off the relation predictor by setting `predict_relations_for_ego` in the config to `false` and all agents will yield to the conflict by default (potential dead lock warning).
+
+The deafult relation predictor requires loading a pretrained model. You can download this model from [Google Drive](https://drive.google.com/drive/u/2/folders/1SH8HWu8DQtwUgSFoIJOL8vJEvgFptBCD). Note this model was trained by WOMD and will not work properly on NuPlan dataset. 
+
 # More
 
 To build and test your own planner and learn more about the data APIs, check out our tutorial at `tutor_planner.ipynb`.
