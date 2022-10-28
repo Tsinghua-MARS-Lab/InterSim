@@ -72,6 +72,13 @@ This command will run a quick series of simualtions covering 5 scenarios. InterS
 
 "Simulation Finished!"
 
+## With default relation predictor
+
+InterSim leverages a pretrained default relation predictor by default. You can turn off the relation predictor by setting `predict_relations_for_ego` in the config to `false` and all agents will yield to the conflict by default (potential dead lock warning).
+
+The deafult relation predictor requires loading a pre-trained model. You can download this model from [Google Drive](https://drive.google.com/drive/folders/1oDkIcttHwcaFSir1L02tp2U8mX20NEk1?usp=sharing). Note this model was trained with WOMD and will not work properly on NuPlan dataset. 
+
+
 ## Check results
 
 The default path for simulation results is `./sim_result/`. Inside this folder, you should see a folder named after the starting time of your simulation in a month-day-hour-minute format. The simulation results are orgnized in the following way:
@@ -128,12 +135,6 @@ The first step to create a new planner is to create a new python script in the f
 Try to run the simulation again, now InterSim should you your new planner instead of the default ego_planner.
 
 `python sim.py --max_scenarios 5`
-
-### Using default relation predictor
-
-InterSim leverages a pretrained default relation predictor by default. You can turn off the relation predictor by setting `predict_relations_for_ego` in the config to `false` and all agents will yield to the conflict by default (potential dead lock warning).
-
-The deafult relation predictor requires loading a pretrained model. You can download this model from [Google Drive](https://drive.google.com/drive/u/2/folders/1SH8HWu8DQtwUgSFoIJOL8vJEvgFptBCD). Note this model was trained by WOMD and will not work properly on NuPlan dataset. 
 
 # More
 
