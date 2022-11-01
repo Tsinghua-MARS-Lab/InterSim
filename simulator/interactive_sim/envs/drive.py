@@ -471,7 +471,7 @@ class DriveEnv(gym.Env):
         # print("DriveEnv Stepped")
         return self.state, reward, done, info
 
-    def reset(self, output_dir=None, predictor_list=None):
+    def reset(self, output_dir=None, predictor_list=None, detect_gt_relation=False):
         if self.config.env.planning_task == 'LTP':
             assert self.dataset == 'NuPlan', f'LTP currently only support NuPlan but got dataset of {self.dataset}'
             map_dic = self.data_loader.get_map()
@@ -486,7 +486,8 @@ class DriveEnv(gym.Env):
         if self.config.env.playback_dir is None:
             loaded_scenario, new_files_loaded = self.data_loader.get_next(filter_config=self.filter_config,
                                                                           relation=relation,
-                                                                          seconds_in_future=int(self.config.env.planning_to / self.frame_rate))
+                                                                          seconds_in_future=int(self.config.env.planning_to / self.frame_rate),
+                                                                          detect_gt_relation=detect_gt_relation)
         else:
             loaded_scenario, new_files_loaded = self.data_loader.get_next_from_playback(
                 filter_config=self.filter_config,

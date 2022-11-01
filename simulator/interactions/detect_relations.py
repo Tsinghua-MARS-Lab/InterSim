@@ -2,8 +2,6 @@ import numpy as np
 from interactive_sim.envs.util import *
 import time
 
-total_frame_number = 91
-
 
 def get_relation_for_two_trajectories(traj1, traj2, threshold=0.1):
     '''
@@ -41,7 +39,7 @@ def get_agent_from_dic(agent_in_dic, frame_idx1, agent_id):
     return agent
 
 
-def get_relation_on_crossing(agent_dic, only_prediction_agents=False, to_predict=True):
+def get_relation_on_crossing(agent_dic, only_prediction_agents=False, to_predict=True, total_frame_number=91):
     # edge: [influencer, reactor]
     edges = []
     start_from_frame = 5

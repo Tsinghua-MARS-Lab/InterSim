@@ -934,7 +934,8 @@ class NuPlanDL:
                         print("detected edge:", edges_detected, "\nprediction edge", edges)
             elif detect_gt_relation:
                 edges = get_relation_on_crossing(agent_dic=agent_dic,
-                                                 only_prediction_agents=only_predict_interest_agents)
+                                                 only_prediction_agents=only_predict_interest_agents,
+                                                 total_frame_number=self.total_frames)
 
                 form_a_tree = False
                 if not only_predict_interest_agents and form_a_tree:
