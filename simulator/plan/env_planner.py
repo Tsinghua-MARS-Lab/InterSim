@@ -8,6 +8,7 @@ import time
 
 import interactive_sim.envs.util as utils
 import plan.helper as plan_helper
+import agents.car as car
 
 S0 = 2
 T = 0.25 #1.5  # reaction time when following
@@ -174,12 +175,12 @@ class EnvPlanner:
             for idx, each_pose in enumerate(ego_poses):
                 if idx <= current_frame_idx:
                     continue
-                ego_agent_packed = Agent(x=each_pose[0],
-                                         y=each_pose[1],
-                                         yaw=each_pose[3],
-                                         length=max(1, ego_shape[1]),
-                                         width=max(1, ego_shape[0]),
-                                         agent_id=current_agent)
+                ego_agent_packed =Agent(x=each_pose[0],
+                                             y=each_pose[1],
+                                             yaw=each_pose[3],
+                                             length=max(1, ego_shape[1]),
+                                             width=max(1, ego_shape[0]),
+                                             agent_id=current_agent)
                 if ego_agent_0 is None:
                     ego_agent_0 = ego_agent_packed
                 for each_agent_id in current_state['agent']:
@@ -190,12 +191,12 @@ class EnvPlanner:
                     each_agent_frame_num = current_state['agent'][each_agent_id]['pose'].shape[0]
                     if idx >= each_agent_frame_num:
                         continue
-                    target_agent_packed = Agent(x=current_state['agent'][each_agent_id]['pose'][idx, 0],
-                                                y=current_state['agent'][each_agent_id]['pose'][idx, 1],
-                                                yaw=current_state['agent'][each_agent_id]['pose'][idx, 3],
-                                                length=current_state['agent'][each_agent_id]['shape'][0][1],
-                                                width=current_state['agent'][each_agent_id]['shape'][0][0],
-                                                agent_id=each_agent_id)
+                    target_agent_packed =Agent(x=current_state['agent'][each_agent_id]['pose'][idx, 0],
+                                                    y=current_state['agent'][each_agent_id]['pose'][idx, 1],
+                                                    yaw=current_state['agent'][each_agent_id]['pose'][idx, 3],
+                                                    length=current_state['agent'][each_agent_id]['shape'][0][1],
+                                                    width=current_state['agent'][each_agent_id]['shape'][0][0],
+                                                    agent_id=each_agent_id)
                     if each_pose[0] == -1 or each_pose[1] == -1 or current_state['agent'][each_agent_id]['pose'][idx, 0] == -1 or current_state['agent'][each_agent_id]['pose'][idx, 1] == -1:
                         continue
                     collision = utils.check_collision(ego_agent_packed, target_agent_packed)
@@ -1270,7 +1271,7 @@ class EnvPlanner:
                         if abs(ego_pose2[0]) < 1.1 and abs(ego_pose2[1]) < 1.1:
                             pass
                         else:
-                            ego_agent2 = Agent(x=(ego_pose2[0] + ego_pose[0]) / 2,
+                            ego_agent2 =Agent(x=(ego_pose2[0] + ego_pose[0]) / 2,
                                                y=(ego_pose2[1] + ego_pose[1]) / 2,
                                                yaw=get_angle_of_a_line(ego_pose2[:2], ego_pose[:2]),
                                                length=euclidean_distance(ego_pose2[:2], ego_pose[:2]),
@@ -1291,7 +1292,7 @@ class EnvPlanner:
                         if abs(ego_pose[0]) < 1.1 and abs(ego_pose[1]) < 1.1:
                             # print("WARNING invalid pose for collision detection: ", pose_in_pred)
                             continue
-                        ego_agent = Agent(x=ego_pose[0],
+                        ego_agent =Agent(x=ego_pose[0],
                                           y=ego_pose[1],
                                           yaw=ego_pose[3],
                                           length=max(1, current_state['agent'][agent_id]['shape'][0][1]),
@@ -1301,7 +1302,8 @@ class EnvPlanner:
                         # check traffic light violation
                         for tl_pt in traffic_light_ending_pts:
                             dummy_tf_agent = Agent(x=tl_pt[0], y=tl_pt[1], yaw=0,
-                                                   length=TRAFFIC_LIGHT_COLLISION_SIZE, width=TRAFFIC_LIGHT_COLLISION_SIZE, agent_id=99999)
+                                                   length=TRAFFIC_LIGHT_COLLISION_SIZE,
+                                                   width=TRAFFIC_LIGHT_COLLISION_SIZE, agent_id=99999)
                             running = utils.check_collision(
                                 checking_agent=ego_agent,
                                 target_agent=dummy_tf_agent)
@@ -1324,7 +1326,7 @@ class EnvPlanner:
 
                         each_other_agent_pose_array = current_state['agent'][each_other_agent]['pose']
                         target_current_pose = each_other_agent_pose_array[i]
-                        target_agent = Agent(x=target_current_pose[0],
+                        target_agent =Agent(x=target_current_pose[0],
                                              y=target_current_pose[1],
                                              yaw=target_current_pose[3],
                                              length=max(1, current_state['agent'][each_other_agent]['shape'][0][1]),
@@ -1351,7 +1353,7 @@ class EnvPlanner:
                             if not found_in_loaded:
                                 # FORWARD COLLISION CHECKINGS
                                 target_pose_0 = each_other_agent_pose_array[current_frame_idx]
-                                target_agent_0 = Agent(x=target_pose_0[0],
+                                target_agent_0 =Agent(x=target_pose_0[0],
                                                        y=target_pose_0[1],
                                                        yaw=target_pose_0[3],
                                                        length=max(1, current_state['agent'][each_other_agent]['shape'][0][1]),
@@ -1365,14 +1367,13 @@ class EnvPlanner:
                                     detected_relation = [[each_other_agent, agent_id]]
                                 else:
                                     # FCC backwards
-                                    ego_agent_0 = Agent(
+                                    ego_agent_0 =Agent(
                                         x=interpolated_trajectory[0, 0],
                                         y=interpolated_trajectory[0, 1],
                                         yaw=interpolated_trajectory[0, 3],
                                         length=max(1, current_state['agent'][agent_id]['shape'][0][1]),
                                         width=max(1, current_state['agent'][agent_id]['shape'][0][0]),
-                                        agent_id=agent_id
-                                    )
+                                        agent_id=agent_id)
                                     collision_back = utils.check_collision(ego_agent_0, target_agent)
                                     if collision_back:
                                         # not yield
@@ -1709,18 +1710,6 @@ class SudoInterpolator:
             return None
 
 
-class Agent:
-    def __init__(self,
-                 # init location, angle, velocity
-                 x=0.0, y=0.0, yaw=0.0, vx=0.01, vy=0, length=4.726, width=1.842, agent_id=None, color=None):
-        self.x = x  # px
-        self.y = y
-        self.yaw = change_axis(yaw)
-        self.vx = vx  # px/frame
-        self.vy = vy
-        self.length = max(1, length)
-        self.width = max(1, width)
-        self.agent_polys = []
-        self.crashed = False
-        self.agent_id = agent_id
-        self.color = color
+class Agent(car.Agent):
+    def yaw_changer(self, yaw):
+        return change_axis(-yaw)

@@ -31,12 +31,14 @@ from prediction.M2I.predictor import M2IPredictor
 from plan.base_planner import BasePlanner
 from plan.env_planner import EnvPlanner
 from plan.trajectory_prediction_planner import TrajPredPlanner
-from plan.dummy_planner import DummyPlanner
+# from plan.dummy_planner import DummyPlanner
+from plan.dummy_rl_planner import DummyPlanner
 from plan.e2e_planner import E2EPlanner
 # from plan.chainpnp_planner import EnvPlanner
 
 import interactive_sim.envs.util as utils
 from interactive_sim.envs.metrics import EnvMetrics
+import agents.car as car
 
 DRAW_AGENT_ARROW = False
 DRAW_AGENT_ID = True
@@ -117,7 +119,7 @@ class DriveEnv(gym.Env):
     # def set_prediction_dic(self, prediction_dic):
     #     self.prediction_data = prediction_dic
 
-    def configure(self, config, args, predictor=None):
+    def configure(self, config, args, predictor=None, db=None):
         self.dataset = config.env.dataset
         self.running_mode = config.env.running_mode
 
@@ -161,7 +163,7 @@ class DriveEnv(gym.Env):
             self.data_loader = NuPlanDL(scenario_to_start=0,
                                         file_to_start=starting_file_num,
                                         max_file_number=max_file_num,
-                                        data_path=self.data_path)
+                                        data_path=self.data_path, db=db)
 
         self.data_loader.total_frames = config.env.planning_to
 
@@ -347,10 +349,10 @@ class DriveEnv(gym.Env):
                     v, v_yaw = 0, 0
                 offsets = self.drawer.offsets
                 recentered_xy = self.drawer.recenter((x, y), offsets)
-                new_agent = Agent(x=recentered_xy[0],
-                                  y=recentered_xy[1], yaw=-yaw,
-                                  vx=v, length=length * self.drawer.scale, width=width * self.drawer.scale,
-                                  agent_id=agent_id)
+                new_agent = car.Agent(x=recentered_xy[0],
+                                      y=recentered_xy[1], yaw=yaw,
+                                      vx=v, length=length * self.drawer.scale, width=width * self.drawer.scale,
+                                      agent_id=agent_id)
                 if agent['to_predict']:
                     if 'to_predict' not in info:
                         info['to_predict'] = []
@@ -715,10 +717,10 @@ class DriveEnv(gym.Env):
                 v, v_yaw = 0, 0
             offsets = self.drawer.offsets
             recentered_xy = self.drawer.recenter((x, y), offsets)
-            new_agent = Agent(x=recentered_xy[0],
-                              y=recentered_xy[1], yaw=-yaw,
-                              vx=v, length=length * self.drawer.scale, width=width * self.drawer.scale,
-                              agent_id=agent_id)
+            new_agent = car.Agent(x=recentered_xy[0],
+                                  y=recentered_xy[1], yaw=yaw,
+                                  vx=v, length=length * self.drawer.scale, width=width * self.drawer.scale,
+                                  agent_id=agent_id)
             self.drawer.agents.append(new_agent)
 
         if 'predicting' in self.data_dic:
@@ -763,10 +765,10 @@ class DriveEnv(gym.Env):
                 width, length, _ = self.data_dic['predicting']['original_trajectory'][ego_id]["shape"][0]
                 recentered_ego_org = self.drawer.recenter((org_ego_pose[0], org_ego_pose[1]), self.drawer.offsets)
                 v, v_yaw = 0, 0
-                org_ego_agent = Agent(x=recentered_ego_org[0],
-                                      y=recentered_ego_org[1], yaw=- org_ego_pose[3] - math.pi / 2,
-                                      vx=v, length=length * self.drawer.scale, width=width * self.drawer.scale,
-                                      agent_id=ego_id)
+                org_ego_agent = car.Agent(x=recentered_ego_org[0],
+                                          y=recentered_ego_org[1], yaw=org_ego_pose[3] + math.pi / 2,
+                                          vx=v, length=length * self.drawer.scale, width=width * self.drawer.scale,
+                                          agent_id=ego_id)
 
                 agent_w = org_ego_agent.width
                 agent_l = org_ego_agent.length
@@ -1707,10 +1709,9 @@ class GraphicDrawer():
 
         offsets = self.offsets
         recentered_xy = self.recenter((x, y), offsets)
-
-        new_agent = Agent(x=recentered_xy[0],
-                          y=recentered_xy[1], yaw=-yaw,
-                          vx=0, length=length * self.scale, width=width * self.scale)
+        new_agent = car.Agent(x=recentered_xy[0],
+                              y=recentered_xy[1], yaw=yaw,
+                              vx=0, length=length * self.scale, width=width * self.scale)
         self.pred_agents.append(new_agent)
         # draw
         agent_w = new_agent.width
@@ -1913,21 +1914,21 @@ class GraphicDrawer():
                         self.map_polys.append(poly)
 
 
-class Agent:
-    def __init__(self,
-                 # init location, angle, velocity
-                 x=0.0, y=0.0, yaw=0.0, vx=0.01, vy=0, length=4.726, width=1.842, agent_id=None, color=None):
-        self.x = x  # px
-        self.y = y
-        self.yaw = yaw
-        self.vx = vx  # px/frame
-        self.vy = vy
-        self.length = length  # px
-        self.width = width  # px
-        self.agent_polys = []
-        self.crashed = False
-        self.agent_id = agent_id
-        self.color = color
+# class Agent:
+#     def __init__(self,
+#                  # init location, angle, velocity
+#                  x=0.0, y=0.0, yaw=0.0, vx=0.01, vy=0, length=4.726, width=1.842, agent_id=None, color=None):
+#         self.x = x  # px
+#         self.y = y
+#         self.yaw = yaw
+#         self.vx = vx  # px/frame
+#         self.vy = vy
+#         self.length = length  # px
+#         self.width = width  # px
+#         self.agent_polys = []
+#         self.crashed = False
+#         self.agent_id = agent_id
+#         self.color = color
 
 
 def dictionary_to_state(dic, frame_index=0):
