@@ -19,7 +19,7 @@ FILE_TO_START = 0
 # for relationship flip: 134, 138, 139, 226
 # for simulation
 # failure cases: 13
-SCENE_TO_START = 230     # 107 for nudging  # 38 for turning large intersection failure
+SCENE_TO_START = 242     # 107 for nudging  # 38 for turning large intersection failure
 SAME_WAY_LANES_SEARCHING_DIST_THRESHOLD = 20
 SAME_WAY_LANES_SEARCHING_DIRECTION_THRESHOLD = 0.1
 
@@ -1065,7 +1065,7 @@ class WaymoDL:
         return data_to_return
 
     def get_next(self, process_intersection=True, relation=False, agent_only=False, only_predict_interest_agents=False,
-                 filter_config={}, calculate_gt_relation=False, load_prediction=True, seconds_in_future=None):
+                 filter_config={}, detect_gt_relation=False, load_prediction=True, seconds_in_future=None):
         new_files_loaded = False
 
         if self.current_dataset is None:
@@ -1115,7 +1115,7 @@ class WaymoDL:
                                                            agent_only=agent_only,
                                                            only_predict_interest_agents=only_predict_interest_agents,
                                                            loading_prediction_relation=load_prediction,
-                                                           detect_gt_relation=calculate_gt_relation,
+                                                           detect_gt_relation=detect_gt_relation,
                                                            filter_config=filter_config)
             data_to_return['scenario'] = scenario_id
 

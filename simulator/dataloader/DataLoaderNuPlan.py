@@ -241,7 +241,6 @@ from nuplan.database.nuplan_db_orm.nuplandb import NuPlanDB
 from nuplan.database.nuplan_db_orm.nuplandb_wrapper import NuPlanDBWrapper
 from nuplan.planning.nuboard.base.data_class import NuBoardFile, SimulationScenarioKey
 from nuplan.planning.nuboard.base.experiment_file_data import ExperimentFileData
-from nuplan.planning.nuboard.base.simulation_tile import SimulationTile
 from nuplan.planning.scenario_builder.abstract_scenario import AbstractScenario
 from nuplan.planning.scenario_builder.nuplan_db.nuplan_scenario import NuPlanScenario
 from nuplan.planning.scenario_builder.nuplan_db.nuplan_scenario_utils import (
@@ -935,7 +934,10 @@ class NuPlanDL:
             elif detect_gt_relation:
                 edges = get_relation_on_crossing(agent_dic=agent_dic,
                                                  only_prediction_agents=only_predict_interest_agents,
-                                                 total_frame_number=self.total_frames)
+                                                 total_frame_number=self.total_frames,
+                                                 to_predict=False)
+
+                print("testtest: ", edges)
 
                 form_a_tree = False
                 if not only_predict_interest_agents and form_a_tree:

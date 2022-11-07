@@ -9,11 +9,11 @@ import logging
 import argparse
 import datetime
 import copy
+import pickle
 
 def save_data_to_pickle(data_to_save, saving_file_path):
-    if not final_data_saved:
-        with open(saving_file_path, 'wb') as f:
-            pickle.dump(data_to_save, f, pickle.HIGHEST_PROTOCOL)
+    with open(saving_file_path, 'wb') as f:
+        pickle.dump(data_to_save, f, pickle.HIGHEST_PROTOCOL)
 
 def main(args):
     spec = importlib.util.spec_from_file_location('config', args.config)
@@ -42,14 +42,19 @@ def main(args):
         if len(loaded_edges) < 1:
             print("skip scenario with no edge")
             non_interact_scene += 1
+            continue
         else:
             data_to_save[env.data_dic['scenario']] = loaded_edges
             interact_scene += 1
+        each_scenario = env.data_dic
         if (interact_scene + non_interact_scene) % 500 == 10 or 0 < (interact_scene + non_interact_scene) < 10:
             print(f"summary: {interact_scene / (interact_scene + non_interact_scene) * 100:.03f}%", " in ",
                   f"{interact_scene + non_interact_scene} scenes")
             print(f"scenarios: {len(list(data_to_save.keys()))} and current: {each_scenario['scenario']}")
             print(f"inspect: {data_to_save[each_scenario['scenario']]}")
+
+        save_data_to_pickle(data_to_save, saving_file_path)
+
         if (interact_scene + non_interact_scene) % 10000 == 0:
             save_data_to_pickle(data_to_save, saving_file_path)
 
@@ -60,11 +65,21 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser('Parse configuration file')
     parser.add_argument('--config', type=str, default='config.py')
     parser.add_argument('--log_dir', type=str, default='nu_training_dataset')
+    parser.add_argument('--render', default=False, action='store_false')
+    parser.add_argument('--save_playback_data', default=False, action='store_true')
     parser.add_argument('--starting_file_num', type=int, default=-1)
     parser.add_argument('--ending_file_num', type=int, default=-1)
     parser.add_argument('--multi_process', default=False, action='store_true')
     parser.add_argument('--file_per_worker', type=int, default=1)
     parser.add_argument('--max_scenarios', type=int, default=100000)
+
+
+    parser.add_argument('--method', type=str, default='unknown')
+    # parser.add_argument('--overwrite',default=True,action='store_true')
+    # parser.add_argument('--resume',default=False,action='store_true')
+    # parser.add_argument('--debug',default=False,action='store_true')
+    parser.add_argument('--save_log', default=False, action='store_true')
+
     # parser.add_argument('--save_playback', default=True, action='store_true')
     args_p = parser.parse_args()
     spec = importlib.util.spec_from_file_location('config', args_p.config)

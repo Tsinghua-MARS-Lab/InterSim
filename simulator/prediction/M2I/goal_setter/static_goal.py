@@ -52,8 +52,9 @@ class GoalSetter:
                         yaw = agent_dic['pose'][-frame_idx][3]
                         break
                 if point is None:
-                    # print('ERROR: goal point is none ', agent_dic['pose'], agent_id)
-                    print('[Static goal] ERROR: goal point is none ', agent_id)
+                    if agent_id == 'ego':
+                        # print('ERROR: goal point is none ', agent_dic['pose'], agent_id)
+                        print('[Static goal] ERROR: goal point is none ', agent_id)
                     point = [0, 0]
                     yaw = 0
         return [point, yaw]

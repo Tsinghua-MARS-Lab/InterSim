@@ -39,7 +39,7 @@ def get_agent_from_dic(agent_in_dic, frame_idx1, agent_id):
     return agent
 
 
-def get_relation_on_crossing(agent_dic, only_prediction_agents=False, to_predict=True, total_frame_number=91):
+def get_relation_on_crossing(agent_dic, only_prediction_agents=False, to_predict=True, total_frame_number=91, agent_types=None):
     # edge: [influencer, reactor]
     edges = []
     start_from_frame = 5

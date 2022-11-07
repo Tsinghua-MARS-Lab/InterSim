@@ -1,7 +1,7 @@
 from prediction.M2I.relation_predictor.predict import RelationPredictor
 from prediction.M2I.goal_setter.static_goal import GoalSetter
 from prediction.M2I.marginal_prediction.predict import MarginalTrajectoryPredictor
-from prediction.M2I.marginal_prediction_tnt.predict import MarginalTrajectoryPredictorTNT
+# from prediction.M2I.marginal_prediction_tnt.predict import MarginalTrajectoryPredictorTNT
 # # from prediction.M2I.reactor_prediction.predict import ReactorTrajectoryPredictor
 # from prediction.M2I.xpt_prediction.predict import XPtPredictor
 # from prediction.M2I.guilded_m_pred.predict import GuildedTrajectoryPredictor
