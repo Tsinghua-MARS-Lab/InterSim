@@ -78,6 +78,20 @@ InterSim leverages a pretrained default relation predictor by default. You can t
 
 The deafult relation predictor requires loading a pre-trained model. You can download this model from [Google Drive](https://drive.google.com/drive/folders/1oDkIcttHwcaFSir1L02tp2U8mX20NEk1?usp=sharing). Note this model was trained with WOMD and will not work properly on NuPlan dataset. 
 
+### Compile Cython Scripts
+
+InterSim provides several default predictors to use. These predictors use Cython scripts to normalize and pack data for the models.
+The default setting will trigger a relation predictor from `M2I/relation_predictor`. 
+If you are using any of these default predictors, you need to travel to its `src` folder and compile the Cython script first. For the default setting with the relation predictor, travel to the src folder with
+
+`cd prediction/M2I/relation_predictor/src/`
+
+and compile Cython scripts with
+
+`cython -a utils_cython.pyx && python setup.py build_ext --inplace`
+
+If you need to use another predictor, travel to the src folder and run the same command to compile the Cython script first.
+
 
 ## Check results
 
