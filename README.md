@@ -1,7 +1,6 @@
 # InterSim
 
-InterSim is a simulator for closed-loop interactive simualtions with real on-road data and maps. 
-Without over-promising, the best user case for InterSim Beta is to extensively test your planning system before deployment. If you want to test your planner with a large real-world dataset, you should consider InterSim. InterSim models real world drivers behaviors against new conflicts with relation prediction models. InterSim now supports both Waymo Open Motion Dataset and NuPlan dataset.
+InterSim is a simulator for closed-loop interactive simulations with real on-road data and maps. Without over-promising, the best use case for InterSim Beta is to test your planning system before deployment extensively. If you want to test your planner with a large real-world dataset, you should consider InterSim. InterSim models real-world drivers' behaviors against new conflicts with relation prediction models. InterSim now supports both Waymo Open Motion Dataset and the NuPlan dataset.
 
 Follow the instructions below to setup an environment or follow the tutorials if you prefer jupyter notebooks.
 
