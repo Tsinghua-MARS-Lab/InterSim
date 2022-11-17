@@ -95,6 +95,7 @@ class EnvPlanner:
         self.planning_from = env_config.env.planning_from
         self.planning_interval = env_config.env.planning_interval
         self.planning_horizon = env_config.env.planning_horizon
+        self.planning_to = env_config.env.planning_to
         self.scenario_frame_number = 0
         self.online_predictor = predictor
         self.method_testing = env_config.env.testing_method  # 0=densetnt with dropout, 1=0+post-processing, 2=1+relation
@@ -304,7 +305,7 @@ class EnvPlanner:
             total_frames = current_state['agent'][ego_id]['pose'].shape[0]
             total_distance_traveled = 0
             for i in range(total_frames - current_frame_idx):
-                my_current_v_per_step -= A_SLOWDOWN_DESIRE/10/10
+                my_current_v_per_step -= A_SLOWDOWN_DESIRE/self.frame_rate/self.frame_rate
                 step_speed = euclidean_distance(
                     current_state['agent'][ego_id]['pose'][current_frame_idx+i - 1, :2],
                     current_state['agent'][ego_id]['pose'][current_frame_idx+i - 2, :2])
@@ -495,11 +496,11 @@ class EnvPlanner:
 
     def get_reroute_traj(self, current_state, agent_id, current_frame_idx,
                          follow_org_route=False, dynamic_turnings=True, current_route=[], is_ego=False):
-        # do ego agent reroute
-        # change route, follow route
-        # init the route information of current agent
-        # route is a list of lane_ids for the agent to follow decided from previous time used for the simulation
-        # prior is a list of lane_ids detected from the original ground truth trajectory
+        """
+        return a marginal planned trajectory with a simple lane follower
+        for NuPlan, use route_roadbloacks. a list of road bloacks
+        for Waymo, use route, a list of lane_ids, and prior, a list of lane_ids detected from the original gt trajectories
+        """
         assert self.routed_traj is not None, self.routed_traj
         # generate a trajectory based on the route
         # 1. get the route for relevant agents
@@ -508,38 +509,70 @@ class EnvPlanner:
                                                                                     agent_id=agent_id,
                                                                                     current_frame_idx=current_frame_idx)
         my_current_v_per_step = np.clip(my_current_v_per_step, a_min=0, a_max=7)
+        goal_pt, goal_yaw = self.online_predictor.goal_setter.get_goal(current_data=current_state,
+                                                                       agent_id=agent_id,
+                                                                       dataset=self.dataset)
         if PRINT_TIMER:
             last_tic = time.perf_counter()
         if agent_id not in self.past_lanes:
             self.past_lanes[agent_id] = []
-        current_lanes, current_closest_pt_indices, dist_to_lane = plan_helper.find_closest_lane(
-            current_state=current_state,
-            my_current_pose=my_current_pose,
-            selected_lanes=current_route,
-            valid_lane_types=self.valid_lane_types,
-            excluded_lanes=self.past_lanes[agent_id]
-        )
+        if self.dataset == 'NuPlan' and is_ego:
+            goal_lane, _, _ = plan_helper.find_closest_lane(
+                current_state=current_state,
+                my_current_pose=[goal_pt[0], goal_pt[1], -1, goal_yaw],
+                valid_lane_types=self.valid_lane_types,
+            )
+            # current_route is a list of multiple routes to choose
+            if len(current_route) == 0:
+                lanes_in_route = []
+                route_roadblocks = current_state['route'] if 'route' in current_state else None
+                for each_block in route_roadblocks:
+                    if each_block not in current_state['road']:
+                        continue
+                    lanes_in_route += current_state['road'][each_block]['lower_level']
+                current_lanes, current_closest_pt_indices, dist_to_lane = plan_helper.find_closest_lane(
+                    current_state=current_state,
+                    my_current_pose=my_current_pose,
+                    selected_lanes=lanes_in_route,
+                    valid_lane_types=self.valid_lane_types,
+                    excluded_lanes=self.past_lanes[agent_id]
+                )
+            else:
+                selected_lanes = []
+                for each_route in current_route:
+                    selected_lanes += each_route
+                current_lanes, current_closest_pt_indices, dist_to_lane = plan_helper.find_closest_lane(
+                    current_state=current_state,
+                    my_current_pose=my_current_pose,
+                    selected_lanes=selected_lanes,
+                    valid_lane_types=self.valid_lane_types,
+                    excluded_lanes=self.past_lanes[agent_id]
+                )
+        else:
+            if len(current_route) > 0:
+                current_route = current_route[0]
+            current_lanes, current_closest_pt_indices, dist_to_lane = plan_helper.find_closest_lane(
+                current_state=current_state,
+                my_current_pose=my_current_pose,
+                selected_lanes=current_route,
+                valid_lane_types=self.valid_lane_types,
+                excluded_lanes=self.past_lanes[agent_id]
+            )
         if dist_to_lane is not None:
-            distance_threshold = max(7, max(7 * my_current_v_per_step, dist_to_lane))
+            distance_threshold = max(self.frame_rate, max(self.frame_rate * my_current_v_per_step, dist_to_lane))
         else:
             dist_to_lane = 999
-        if dist_to_lane > OFF_ROAD_DIST:
-            self.current_on_road = False
-        else:
-            self.current_on_road = True
-
-        goal_pt, goal_yaw = self.online_predictor.goal_setter.get_goal(current_data=current_state,
-                                                                       agent_id=agent_id,
-                                                                       dataset=self.dataset)
-        if self.dataset == 'NuPlan' and len(current_route) == 0:
-            route_roadblocks = current_state['route'] if 'route' in current_state else None
-            current_routes = self.set_route(road_dic=current_state['road'],
-                                            goal_pt=[goal_pt[0], goal_pt[1], 0, goal_yaw], current_pose=my_current_pose,
-                                            previous_routes=[current_route], max_number_of_routes=1,
-                                            route_roadblock_check=route_roadblocks,
-                                            agent_id=agent_id)
-            print(f"Got {len(current_routes)} for {agent_id} with {goal_pt} and {my_current_pose} given route {route_roadblocks}")
-            current_route = current_routes[0] if len(current_routes) > 0 else []
+        self.current_on_road = not (dist_to_lane > OFF_ROAD_DIST)
+        if self.dataset == 'NuPlan' and len(current_route) == 0 and is_ego:
+            pass
+            # route_roadblocks = current_state['route'] if 'route' in current_state else None
+            # current_routes = self.set_route(road_dic=current_state['road'],
+            #                                 goal_pt=[goal_pt[0], goal_pt[1], 0, goal_yaw], current_pose=my_current_pose,
+            #                                 previous_routes=[current_route], max_number_of_routes=1,
+            #                                 route_roadblock_check=route_roadblocks,
+            #                                 agent_id=agent_id)
+            # print(f"Got {len(current_routes)} for {agent_id} with {goal_pt} and {my_current_pose} given route {route_roadblocks}")
+            # current_route = current_routes[0] if len(current_routes) > 0 else []
         else:
             if current_lanes in current_route and not isinstance(current_lanes, list):
                 for each_past_lane in current_route[:current_route.index(current_lanes)]:
@@ -566,7 +599,12 @@ class EnvPlanner:
             print(f"Time spent on first lane search:  {time.perf_counter() - last_tic:04f}s")
             last_tic = time.perf_counter()
 
-        if len(current_route) == 0 and self.map_api is None:
+        if self.dataset == 'NuPlan' and is_ego:
+            # use route_roadblocks
+            prior_lanes = []
+            if current_lane is None:
+                print("WARNING: Ego Current Lane not found")
+        elif len(current_route) == 0:
             # get route from the original trajectory, this route does not have to be neither accurate nor connected
             prior_lanes = []
             org_closest_pt_idx = []
@@ -615,142 +653,243 @@ class EnvPlanner:
         cuttin_lane_idx = None
         first_lane = True
 
+        def search_lanes(current_lane, route_roadblocks):
+            result_lanes = []
+
+            if goal_lane not in self.past_lanes['ego']:
+                goal_roadblock = current_state['road'][goal_lane]['upper_level'][0]
+                current_roadblock = current_state['road'][current_lane]['upper_level'][0]
+                if goal_roadblock == current_roadblock:
+                    current_lane = goal_lane
+
+            lanes_to_loop = [[current_lane]]
+            visited_lanes = [current_lane]
+
+            while len(lanes_to_loop) > 0:
+                looping_lanes = lanes_to_loop.pop()
+                if len(looping_lanes) >= 3:
+                    result_lanes.append(looping_lanes)
+                    continue
+                looping_lane = looping_lanes[-1]
+                looping_roadblock = current_state['road'][looping_lane]['upper_level'][0]
+                if looping_roadblock not in route_roadblocks:
+                    continue
+                # no lane changing
+                # all_lanes_in_block = current_state['road'][looping_roadblock]['lower_level']
+                # for each_lane in all_lanes_in_block:
+                #     if each_lane not in visited_lanes:
+                #         visited_lanes.append(each_lane)
+                #         lanes_to_loop.append(looping_lanes[:-1]+[each_lane])
+                next_lanes = current_state['road'][looping_lane]['next_lanes']
+                for each_lane in next_lanes:
+                    if each_lane not in visited_lanes:
+                        visited_lanes.append(each_lane)
+                        if each_lane not in current_state['road']:
+                            result_lanes.append(looping_lanes+[each_lane])
+                            continue
+                        each_block = current_state['road'][each_lane]['upper_level'][0]
+                        if each_block not in route_roadblocks:
+                            continue
+                        lanes_to_loop.append(looping_lanes+[each_lane])
+                if len(lanes_to_loop) == 0 and len(looping_lanes) > 0:
+                    result_lanes.append(looping_lanes)
+            return result_lanes
+
+        if self.dataset == 'NuPlan' and is_ego and current_lane is not None:
+            route_roadblocks = current_state['route'] if 'route' in current_state else None
+            current_upper_roadblock = current_state['road'][current_lane]['upper_level'][0]
+            if current_upper_roadblock not in route_roadblocks:
+                route_roadblocks += [current_upper_roadblock]
+            while len(route_roadblocks) < 3:
+                route_roadblocks.append(current_state['road'][route_roadblocks[-1]]['next_lanes'][0])
+            # assumption: not far from current lane
+            result_lanes = search_lanes(current_lane, route_roadblocks)
+
+            if len(result_lanes) == 0:
+                # choose a random lane from the first roadblock
+                print("WARNING: No available route found")
+                assert False, 'No Available Route Found for ego'
+
+            result_traj = []
+            for each_route in result_lanes:
+                current_trajectory = None
+                reference_trajectory = None
+                reference_yaw = None
+                for each_lane in each_route:
+                    if reference_trajectory is None:
+                        reference_trajectory = current_state['road'][each_lane]['xyz'][current_closest_pt_idx:, :2].copy()
+                        reference_yaw = current_state['road'][each_lane]['dir'][current_closest_pt_idx:].copy()
+                    else:
+                        reference_trajectory = np.concatenate((reference_trajectory,
+                                                               current_state['road'][each_lane]['xyz'][:, :2].copy()))
+                        reference_yaw = np.concatenate((reference_yaw,
+                                                        current_state['road'][each_lane]['dir'].copy()))
+                # get CBC
+                starting_index = int(my_current_v_per_step * self.frame_rate * 2)
+                starting_index = min(starting_index, reference_trajectory.shape[0] - 1)
+                p4 = reference_trajectory[starting_index, :2]
+                starting_yaw = -utils.normalize_angle(reference_yaw[starting_index] + math.pi / 2)
+                delta = euclidean_distance(p4, my_current_pose[:2]) / 4
+                x, y = math.sin(starting_yaw) * delta + p4[0], math.cos(starting_yaw) * delta + p4[1]
+                p3 = [x, y]
+
+                p1 = my_current_pose[:2]
+                yaw = - utils.normalize_angle(my_current_pose[3] + math.pi / 2)
+                # delta = euclidean_distance(p4, my_current_pose[:2]) / 4
+                delta = min(70/self.frame_rate, euclidean_distance(p4, my_current_pose[:2]) / 2)
+                x, y = -math.sin(yaw) * delta + my_current_pose[0], -math.cos(yaw) * delta + my_current_pose[1]
+                p2 = [x, y]
+                if euclidean_distance(p4, p1) > 2:
+                    if my_current_v_per_step < 1:
+                        proper_v_for_cbc = (my_current_v_per_step + 1) / 2
+                    else:
+                        proper_v_for_cbc = my_current_v_per_step
+
+                    connection_traj = self.trajectory_from_cubic_BC(p1=p1, p2=p2, p3=p3, p4=p4, v=proper_v_for_cbc)
+                    current_trajectory = np.concatenate((connection_traj, reference_trajectory[starting_index:, :2]))
+                else:
+                    current_trajectory = reference_trajectory[starting_index:, :2]
+                result_traj.append(current_trajectory)
+                current_state['predicting']['trajectory_to_mark'].append(current_trajectory)
+
+            self.routed_traj[agent_id] = result_traj
+            return self.routed_traj[agent_id], result_lanes
+
         if current_lane is not None:
             current_looping_lane = current_lane
             while_counter = 0
             if distance_threshold > 100:
                 print("Closest lane detection failded: ", agent_id, current_looping_lane, distance_threshold, my_current_v_per_step, dist_to_lane, current_route)
+            else:
+                distance_threshold = max(distance_threshold, self.frame_rate * my_current_v_per_step)
 
-            distance_threshold = max(distance_threshold, 10 * my_current_v_per_step)
+                while accum_dist < distance_threshold and distance_threshold <= 100:
+                    if while_counter > 100:
+                        print("ERROR: Infinite looping lanes")
+                        break
 
-            while accum_dist < distance_threshold and distance_threshold <= 100:
-                if while_counter > 100:
-                    print("ERROR: Infinite looping lanes")
-                    break
-                while_counter += 1
-                # turning: 1=left turn, 2=right turn, 3=UTurn
-                # UTurn -> Skip
-                # Left/Right check distance, if < 15 then skip, else not skip
-                current_looping_lane_turning = current_state['road'][current_looping_lane]['turning']
-                if dynamic_turnings and current_looping_lane_turning == 3 or (current_looping_lane_turning in [1, 2] and euclidean_distance(current_state['road'][current_looping_lane]['xyz'][-1, :2], my_current_pose[:2]) < 15):
-                    # skip turning lanes
-                    # accum_dist = distance_threshold - 0.1
-                    pass
-                elif while_counter > 50:
-                    print("Inifinite looping lanes (agent_id/current_lane): ", agent_id, current_looping_lane)
-                    accum_dist = distance_threshold - 0.1
-                else:
-                    if first_lane:
-                        road_xy = current_state['road'][current_looping_lane]['xyz'][current_closest_pt_idx:, :2].copy()
+
+                    while_counter += 1
+                    # turning: 1=left turn, 2=right turn, 3=UTurn
+                    # UTurn -> Skip
+                    # Left/Right check distance, if < 15 then skip, else not skip
+                    current_looping_lane_turning = current_state['road'][current_looping_lane]['turning']
+                    if dynamic_turnings and current_looping_lane_turning == 3 or (current_looping_lane_turning in [1, 2] and euclidean_distance(current_state['road'][current_looping_lane]['xyz'][-1, :2], my_current_pose[:2]) < 15):
+                        # skip turning lanes
+                        # accum_dist = distance_threshold - 0.1
+                        pass
+                    elif while_counter > 50:
+                        print("Inifinite looping lanes (agent_id/current_lane): ", agent_id, current_looping_lane)
+                        accum_dist = distance_threshold - 0.1
                     else:
-                        road_xy = current_state['road'][current_looping_lane]['xyz'][:, :2].copy()
-                    for j, each_xy in enumerate(road_xy):
-                        if j == 0:
-                            continue
-                        accum_dist += euclidean_distance(each_xy, road_xy[j - 1])
-                        # print("test: ", first_lane, agent_id, j, accum_dist, distance_threshold)
-                        if accum_dist >= distance_threshold:
-                            p4 = each_xy
-                            if first_lane:
-                                yaw = - utils.normalize_angle(
-                                    current_state['road'][current_looping_lane]['dir'][j + current_closest_pt_idx] + math.pi / 2)
-                            else:
-                                yaw = - utils.normalize_angle(
-                                    current_state['road'][current_looping_lane]['dir'][j] + math.pi / 2)
-                            delta = euclidean_distance(p4, my_current_pose[:2]) / 4
-                            x, y = math.sin(yaw) * delta + p4[0], math.cos(yaw) * delta + p4[1]
-                            p3 = [x, y]
-                            cuttin_lane_id = current_looping_lane
-                            if first_lane:
-                                cuttin_lane_idx = j + current_closest_pt_idx
-                            else:
-                                cuttin_lane_idx = j
-                            break
-
-                if p4 is None:
-                    if current_looping_lane in prior_lanes and current_looping_lane != prior_lanes[-1]:
-                        # if already has route, then use previous route
-                        current_lane_route_idx = prior_lanes.index(current_looping_lane)
-                        current_looping_lane = prior_lanes[current_lane_route_idx+1]
-                    else:
-                        if self.dataset == 'NuPlan':
-                            break
-                        # if not, try to loop a new route
-                        next_lanes = current_state['road'][current_looping_lane]['next_lanes']
-                        next_lane_found = False
-                        if follow_org_route:
-                            if current_looping_lane in prior_lanes:  # True:
-                                # follow original lanes
-                                current_idx = prior_lanes.index(current_looping_lane)
-                                if current_idx < len(prior_lanes) - 1:
-                                    next_lane = prior_lanes[current_idx + 1]
-                                    next_lane_found = True
-                                    if next_lane in next_lanes:
-                                        # next lane connected, loop this next lane and continue next loop
-                                        current_looping_lane = next_lane
-                                    else:
-                                        # next lane not connected
-                                        # 1. find closest point
-                                        road_xy = current_state['road'][current_looping_lane]['xyz'][:, :2].copy()
-                                        closest_dist = 999999
-                                        closest_lane_idx = None
-                                        turning_yaw = None
-                                        for j, each_xy in enumerate(road_xy):
-                                            dist = euclidean_distance(each_xy[:2], my_current_pose[:2])
-                                            if dist < closest_dist:
-                                                closest_lane_idx = j
-                                                closest_dist = dist
-                                                turning_yaw = utils.normalize_angle(my_current_pose[3] - current_state['road'][current_looping_lane]['dir'][j])
-                                        if closest_lane_idx is None:
-                                            # follow no next lane logic below
-                                            next_lane_found = False
-                                        else:
-                                            max_turning_dist = 120 / math.pi
-                                            if closest_dist >= max_turning_dist:
-                                                # too far for max turning speed 15m/s
-                                                if turning_yaw > math.pi / 2:
-                                                    # turn towards target lane first on the right
-                                                    yaw = - utils.normalize_angle(my_current_pose[3] + math.pi / 2) + math / 2
-                                                    delta = 180 / math.pi
-                                                    x, y = math.sin(yaw) * delta + my_current_pose[0], math.cos(yaw) * delta + my_current_pose[1]
-                                                    p4 = [x, y]
-                                                    yaw = yaw - math / 2
-                                                    delta = delta / 2
-                                                    x, y = math.sin(yaw) * delta + my_current_pose[0], math.cos(yaw) * delta + my_current_pose[1]
-                                                    p3 = [x, y]
-                                                    break
-                                                if turning_yaw <= math.pi / 2:
-                                                    # turn towards target lane first on the right
-                                                    yaw = - utils.normalize_angle(my_current_pose[3] + math.pi / 2) - math / 2
-                                                    delta = 180 / math.pi
-                                                    x, y = math.sin(yaw) * delta + my_current_pose[0], math.cos(yaw) * delta + my_current_pose[1]
-                                                    p4 = [x, y]
-                                                    yaw = yaw + math / 2
-                                                    delta = delta / 2
-                                                    x, y = math.sin(yaw) * delta + my_current_pose[0], math.cos(yaw) * delta + my_current_pose[1]
-                                                    p3 = [x, y]
-                                                    break
-                                            else:
-                                                accum_dist = distance_threshold - 0.1
-
-                        if not next_lane_found:
-                            # follow prior or choose a random one as the next
-                            if len(next_lanes) > 0:
-                                current_looping_lane_changes = False
-                                for each_lane in next_lanes:
-                                    if each_lane in prior_lanes:
-                                        current_looping_lane = each_lane
-                                        current_looping_lane_changes = True
-                                if not current_looping_lane_changes:
-                                    # random choose one lane as route
-                                    current_looping_lane = random.choice(next_lanes)
-                            else:
-                                print("warning: no next lane found with breaking the lane finding loop")
+                        if first_lane:
+                            road_xy = current_state['road'][current_looping_lane]['xyz'][current_closest_pt_idx:, :2].copy()
+                        else:
+                            road_xy = current_state['road'][current_looping_lane]['xyz'][:, :2].copy()
+                        for j, each_xy in enumerate(road_xy):
+                            if j == 0:
+                                continue
+                            accum_dist += euclidean_distance(each_xy, road_xy[j - 1])
+                            if accum_dist >= distance_threshold:
+                                p4 = each_xy
+                                if first_lane:
+                                    yaw = - utils.normalize_angle(
+                                        current_state['road'][current_looping_lane]['dir'][j + current_closest_pt_idx] + math.pi / 2)
+                                else:
+                                    yaw = - utils.normalize_angle(
+                                        current_state['road'][current_looping_lane]['dir'][j] + math.pi / 2)
+                                delta = euclidean_distance(p4, my_current_pose[:2]) / 4
+                                x, y = math.sin(yaw) * delta + p4[0], math.cos(yaw) * delta + p4[1]
+                                p3 = [x, y]
+                                cuttin_lane_id = current_looping_lane
+                                if first_lane:
+                                    cuttin_lane_idx = j + current_closest_pt_idx
+                                else:
+                                    cuttin_lane_idx = j
                                 break
-                                # return
-                else:
-                    break
-                first_lane = False
+
+                    if p4 is None:
+                        if current_looping_lane in prior_lanes and current_looping_lane != prior_lanes[-1]:
+                            # if already has route, then use previous route
+                            current_lane_route_idx = prior_lanes.index(current_looping_lane)
+                            current_looping_lane = prior_lanes[current_lane_route_idx+1]
+                        else:
+                            # if not, try to loop a new route
+                            next_lanes = current_state['road'][current_looping_lane]['next_lanes']
+                            next_lane_found = False
+                            if follow_org_route:
+                                if current_looping_lane in prior_lanes:  # True:
+                                    # follow original lanes
+                                    current_idx = prior_lanes.index(current_looping_lane)
+                                    if current_idx < len(prior_lanes) - 1:
+                                        next_lane = prior_lanes[current_idx + 1]
+                                        next_lane_found = True
+                                        if next_lane in next_lanes:
+                                            # next lane connected, loop this next lane and continue next loop
+                                            current_looping_lane = next_lane
+                                        else:
+                                            # next lane not connected
+                                            # 1. find closest point
+                                            road_xy = current_state['road'][current_looping_lane]['xyz'][:, :2].copy()
+                                            closest_dist = 999999
+                                            closest_lane_idx = None
+                                            turning_yaw = None
+                                            for j, each_xy in enumerate(road_xy):
+                                                dist = euclidean_distance(each_xy[:2], my_current_pose[:2])
+                                                if dist < closest_dist:
+                                                    closest_lane_idx = j
+                                                    closest_dist = dist
+                                                    turning_yaw = utils.normalize_angle(my_current_pose[3] - current_state['road'][current_looping_lane]['dir'][j])
+                                            if closest_lane_idx is None:
+                                                # follow no next lane logic below
+                                                next_lane_found = False
+                                            else:
+                                                max_turning_dist = 120 / math.pi
+                                                if closest_dist >= max_turning_dist:
+                                                    # too far for max turning speed 15m/s
+                                                    if turning_yaw > math.pi / 2:
+                                                        # turn towards target lane first on the right
+                                                        yaw = - utils.normalize_angle(my_current_pose[3] + math.pi / 2) + math / 2
+                                                        delta = 180 / math.pi
+                                                        x, y = math.sin(yaw) * delta + my_current_pose[0], math.cos(yaw) * delta + my_current_pose[1]
+                                                        p4 = [x, y]
+                                                        yaw = yaw - math / 2
+                                                        delta = delta / 2
+                                                        x, y = math.sin(yaw) * delta + my_current_pose[0], math.cos(yaw) * delta + my_current_pose[1]
+                                                        p3 = [x, y]
+                                                        break
+                                                    if turning_yaw <= math.pi / 2:
+                                                        # turn towards target lane first on the right
+                                                        yaw = - utils.normalize_angle(my_current_pose[3] + math.pi / 2) - math / 2
+                                                        delta = 180 / math.pi
+                                                        x, y = math.sin(yaw) * delta + my_current_pose[0], math.cos(yaw) * delta + my_current_pose[1]
+                                                        p4 = [x, y]
+                                                        yaw = yaw + math / 2
+                                                        delta = delta / 2
+                                                        x, y = math.sin(yaw) * delta + my_current_pose[0], math.cos(yaw) * delta + my_current_pose[1]
+                                                        p3 = [x, y]
+                                                        break
+                                                else:
+                                                    accum_dist = distance_threshold - 0.1
+
+                            if not next_lane_found:
+                                # follow prior or choose a random one as the next
+                                if len(next_lanes) > 0:
+                                    current_looping_lane_changes = False
+                                    for each_lane in next_lanes:
+                                        if each_lane in prior_lanes:
+                                            current_looping_lane = each_lane
+                                            current_looping_lane_changes = True
+                                    if not current_looping_lane_changes:
+                                        # random choose one lane as route
+                                        current_looping_lane = random.choice(next_lanes)
+                                else:
+                                    print("warning: no next lane found with breaking the lane finding loop")
+                                    break
+                                    # return
+                    else:
+                        break
+                    first_lane = False
 
         if PRINT_TIMER:
             print(f"Time spent on while loop:  {time.perf_counter() - last_tic:04f}s")
@@ -912,17 +1051,20 @@ class EnvPlanner:
             last_tic = time.perf_counter()
         if DRAW_CBC_PTS:
             current_state['predicting']['mark_pts'] = [p4, p3, p2, p1]
-        if agent_id == '773fd7e2eba75e88':
-            current_state['predicting']['trajectory_to_mark'].append(self.routed_traj[agent_id])
-            print("test env planner: ", current_routes, self.past_lanes[agent_id])
-        return self.routed_traj[agent_id], current_route
+        if is_ego:
+            if self.dataset == 'NuPlan':
+                return [self.routed_traj[agent_id]], current_route
+            else:
+                return [self.routed_traj[agent_id]], [current_route]
+        else:
+            return self.routed_traj[agent_id], current_route
 
     def adjust_speed_for_collision(self, interpolator, distance_to_end, current_v, end_point_v, reschedule_speed_profile=False):
         # constant deceleration
         time_to_collision = min(self.planning_horizon, distance_to_end / (current_v + end_point_v + 0.0001) * 2)
-        time_to_decelerate = abs(current_v - end_point_v) / 0.01
+        time_to_decelerate = abs(current_v - end_point_v) / (0.1/self.frame_rate)
         traj_to_return = []
-        desired_deceleration = 0.02
+        desired_deceleration = 0.2 /self.frame_rate
         if time_to_collision < time_to_decelerate:
             # decelerate more than 3m/ss
             deceleration = (end_point_v - current_v) / time_to_collision
@@ -932,9 +1074,14 @@ class EnvPlanner:
                 current_v = max(0, current_v)
                 dist_travelled += current_v
                 traj_to_return.append(interpolator.interpolate(dist_travelled))
+            current_len = len(traj_to_return)
+            while current_len < 100:
+                dist_travelled += current_v
+                traj_to_return.append(interpolator.interpolate(dist_travelled))
+                current_len = len(traj_to_return)
         else:
             # decelerate with 2.5m/ss
-            time_for_current_speed = np.clip(((distance_to_end - 3 - (current_v+end_point_v)/2*time_to_decelerate) / (current_v + 0.0001)), 0, 100)
+            time_for_current_speed = np.clip(((distance_to_end - 3 - (current_v+end_point_v)/2*time_to_decelerate) / (current_v + 0.0001)), 0, self.frame_rate*self.frame_rate)
             dist_travelled = 0
             if time_for_current_speed > 1:
                 for i in range(int(time_for_current_speed)):
@@ -947,7 +1094,7 @@ class EnvPlanner:
                             dist_travelled += current_v
                         else:
                             current_v_hat = interpolator.get_speed_with_index(i)
-                            if abs(current_v_hat - current_v) > 0.2:
+                            if abs(current_v_hat - current_v) > 2 / self.frame_rate:
                                 print("WARNING: sharp speed changing", current_v, current_v_hat)
                             current_v = current_v_hat
                             dist_travelled += current_v
@@ -962,8 +1109,13 @@ class EnvPlanner:
                 dist_travelled += current_v
                 traj_to_return.append(interpolator.interpolate(dist_travelled))
                 current_len = len(traj_to_return)
-        # if time_to_collision < time_to_decelerate:
-        #     print("decelerating: ", deceleration, time_to_collision)
+        if len(traj_to_return) > 0:
+            short = self.planning_horizon - len(traj_to_return)
+            for _ in range(short):
+                traj_to_return.append(traj_to_return[-1])
+        else:
+            for _ in range(self.planning_horizon):
+                traj_to_return.append(interpolator.interpolate(0))
         return np.array(traj_to_return, ndmin=2)
 
     def get_traffic_light_collision_pts(self, current_state, current_frame_idx,
@@ -1019,7 +1171,7 @@ class EnvPlanner:
         original_goal = current_state['predicting']['original_trajectory'][agent_id]['pose'][-index, :2]
 
         total_frame = traj.shape[0]
-        if current_idx + self.planning_interval * 2 > total_frame - 1 or current_idx + self.planning_interval + 10 > total_frame - 1:
+        if current_idx + self.planning_interval * 2 > total_frame - 1 or current_idx + self.planning_interval + self.frame_rate > total_frame - 1:
             return False
 
         next_checking_pt = traj[current_idx+self.planning_interval*2, :2]
@@ -1035,7 +1187,7 @@ class EnvPlanner:
             past_goal = True
         # goal_distance2 = euclidean_distance(marginal_traj[self.planning_interval + 20, :2], origial_goal)
         two_point_dist = euclidean_distance(traj[current_idx+self.planning_interval, :2],
-                                            traj[current_idx+self.planning_interval+10, :2])
+                                            traj[current_idx+self.planning_interval+self.frame_rate, :2])
         if two_point_dist < MINIMAL_SPEED_TO_TRACK_ORG_GOAL:
             past_goal = True
         if past_goal:
@@ -1066,9 +1218,9 @@ class EnvPlanner:
                     largest_yaw_change = yaw_diff
                     largest_yaw_change_idx = i
             proper_speed_minimal = max(5, math.pi / 3 / largest_yaw_change)  # calculate based on 20m/s turning for 12s a whole round with a 10hz data in m/s
-            proper_speed_minimal_per_frame = proper_speed_minimal / 10
+            proper_speed_minimal_per_frame = proper_speed_minimal / self.frame_rate
             if largest_yaw_change_idx is not None:
-                deceleration_frames = max(0, largest_yaw_change_idx - abs(my_current_speed - proper_speed_minimal_per_frame) / (A_SLOWDOWN_DESIRE / 100 / 2))
+                deceleration_frames = max(0, largest_yaw_change_idx - abs(my_current_speed - proper_speed_minimal_per_frame) / (A_SLOWDOWN_DESIRE / self.frame_rate / self.frame_rate / 2))
             else:
                 deceleration_frames = 99999
         if agent_id is not None:
@@ -1077,43 +1229,43 @@ class EnvPlanner:
         current_speed = my_current_speed
         for i in range(total_frames):
             if current_speed < 0.1:
-                low_speed_a_scale = 10.0
+                low_speed_a_scale = 1 * self.frame_rate
             else:
-                low_speed_a_scale = 1
+                low_speed_a_scale = 0.1 * self.frame_rate
             if hold_still:
                 trajectory[i] = my_interpolator.interpolate(0)
                 continue
             elif emergency_stop:
-                current_speed -= A_SLOWDOWN_DESIRE / 10
+                current_speed -= A_SLOWDOWN_DESIRE / self.frame_rate
             elif largest_yaw_change_idx is not None:
                 proper_speed_minimal_per_frame = max(0.5, min(proper_speed_minimal_per_frame, 5))
                 if largest_yaw_change_idx >= i >= deceleration_frames:
                     if current_speed > proper_speed_minimal_per_frame:
-                        current_speed -= A_SLOWDOWN_DESIRE / 10 / 2
+                        current_speed -= A_SLOWDOWN_DESIRE / self.frame_rate / 2
                     else:
-                        current_speed += A_SPEEDUP_DESIRE / 10 * a_scale_not_turning * low_speed_a_scale
+                        current_speed += A_SPEEDUP_DESIRE / self.frame_rate * a_scale_not_turning * low_speed_a_scale
                 elif i < deceleration_frames:
                     if current_speed < desired_speed / 4.7:
                         # if far away from the turnings and current speed is smaller than 15m/s, then speed up
                         # else keep current speed
                         if a_per_step is not None:
-                            current_speed += max(-A_SLOWDOWN_DESIRE / 10, min(A_SPEEDUP_DESIRE / 10 * low_speed_a_scale, a_per_step))
+                            current_speed += max(-A_SLOWDOWN_DESIRE / self.frame_rate, min(A_SPEEDUP_DESIRE / self.frame_rate * low_speed_a_scale, a_per_step))
                         else:
-                            current_speed += A_SPEEDUP_DESIRE / 10 * a_scale_turning * low_speed_a_scale
+                            current_speed += A_SPEEDUP_DESIRE / self.frame_rate * a_scale_turning * low_speed_a_scale
                 elif i > largest_yaw_change_idx:
                     if current_speed > proper_speed_minimal_per_frame:
-                        current_speed -= A_SLOWDOWN_DESIRE / 10
+                        current_speed -= A_SLOWDOWN_DESIRE / self.frame_rate
                     else:
                         if a_per_step is not None:
-                            current_speed += max(-A_SLOWDOWN_DESIRE / 10, min(A_SPEEDUP_DESIRE / 10 * low_speed_a_scale, a_per_step))
+                            current_speed += max(-A_SLOWDOWN_DESIRE / self.frame_rate, min(A_SPEEDUP_DESIRE / self.frame_rate * low_speed_a_scale, a_per_step))
                         else:
-                            current_speed += A_SPEEDUP_DESIRE / 10 * a_scale_turning * low_speed_a_scale
+                            current_speed += A_SPEEDUP_DESIRE / self.frame_rate * a_scale_turning * low_speed_a_scale
             else:
                 if current_speed < desired_speed:
                     if a_per_step is not None:
-                        current_speed += max(-A_SLOWDOWN_DESIRE / 10, min(A_SPEEDUP_DESIRE / 10 * low_speed_a_scale, a_per_step))
+                        current_speed += max(-A_SLOWDOWN_DESIRE / self.frame_rate, min(A_SPEEDUP_DESIRE / self.frame_rate * low_speed_a_scale, a_per_step))
                     else:
-                        current_speed += A_SPEEDUP_DESIRE / 10 * a_scale_not_turning * low_speed_a_scale  # accelerate with 0.2 of desired acceleration
+                        current_speed += A_SPEEDUP_DESIRE / self.frame_rate * a_scale_not_turning * low_speed_a_scale  # accelerate with 0.2 of desired acceleration
             current_speed = max(0, current_speed)
             dist_past += current_speed
             trajectory[i] = my_interpolator.interpolate(dist_past)
@@ -1165,8 +1317,8 @@ class EnvPlanner:
                                                            current_state['agent'][agent_id]['pose'][current_frame_idx - 6, :2])/5
                 my_target_speed = 70 / self.frame_rate
 
-                if my_current_v_per_step > 10:
-                    my_current_v_per_step = 1
+                if my_current_v_per_step > 100 / self.frame_rate:
+                    my_current_v_per_step = 10 / self.frame_rate
                 org_pose = current_state['predicting']['original_trajectory'][agent_id]['pose'].copy()
 
                 # for non-vehicle types agent, skip
@@ -1574,7 +1726,7 @@ class EnvPlanner:
                 if current_a_per_step is None:
                     dist = current_v
                 else:
-                    current_v += max(-A_SLOWDOWN_DESIRE/10, min(A_SPEEDUP_DESIRE/10, current_a_per_step))
+                    current_v += max(-A_SLOWDOWN_DESIRE/self.frame_rate, min(A_SPEEDUP_DESIRE/self.frame_rate, current_a_per_step))
                     current_v = max(0, current_v)
                     dist = current_v
             else:
@@ -1582,12 +1734,12 @@ class EnvPlanner:
                     dist = utils.euclidean_distance(reactor_current_pose[:2], reactor_traj[i, :2])*scale
                 else:
                     dist = utils.euclidean_distance(reactor_traj[i-1, :2], reactor_traj[i, :2])*scale
-                if dist > current_v + A_SPEEDUP_DESIRE/10:
-                    current_v += A_SPEEDUP_DESIRE/10
+                if dist > current_v + A_SPEEDUP_DESIRE/self.frame_rate:
+                    current_v += A_SPEEDUP_DESIRE/self.frame_rate
                     current_v = min(target_speed, current_v)
                     dist = current_v
-                elif dist < current_v - A_SLOWDOWN_DESIRE/10:
-                    current_v -= A_SLOWDOWN_DESIRE/10
+                elif dist < current_v - A_SLOWDOWN_DESIRE/self.frame_rate:
+                    current_v -= A_SLOWDOWN_DESIRE/self.frame_rate
                     current_v = max(0, current_v)
                     dist = current_v
             total_distance_traveled.append(dist)
@@ -1625,7 +1777,7 @@ class EnvPlanner:
                 break
             dist_1 = euclidean_distance(traj[6+i, :2], traj[1+i, :2]) / 5
             dist_2 = euclidean_distance(traj[5+i, :2], traj[i, :2]) / 5
-            if abs(dist_1 - dist_2) > 5.0/10:
+            if abs(dist_1 - dist_2) > 5.0/self.frame_rate:
                 print("Warning: frame jumping at: ", i, abs(dist_1 - dist_2))
                 return i
         return -1

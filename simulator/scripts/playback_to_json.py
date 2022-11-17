@@ -19,6 +19,54 @@ def load_data_from_pickle(loading_file_name=None):
         with open(loading_file_name, 'rb') as f:
             return pickle.load(f)
 
+def convert_type(obj):
+    if isinstance(obj, dict):
+        return convert_dic_with_np(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, list) or isinstance(obj, tuple):
+        return convert_list_with_np(obj)
+    elif isinstance(obj, bool) or isinstance(obj, int) or isinstance(obj, float) or isinstance(obj, str) or obj is None:
+        return obj
+    else:
+        try:
+            return float(obj)
+        except:
+            # print("unknown type: ", obj, type(obj))
+            return None
+
+def convert_list_with_np(a_list):
+    list_to_return = []
+    for each_obj in a_list:
+        list_to_return.append(convert_type(each_obj))
+    return list_to_return
+
+def convert_dic_with_np(dic):
+    dic_copy = {}
+    for each_key in dic:
+        if isinstance(each_key, bool) or isinstance(each_key, int) or isinstance(each_key, float) or isinstance(each_key, str):
+            dic_copy[each_key] = convert_type(dic[each_key])
+        elif isinstance(each_key, np.int32) or isinstance(each_key, np.int64):
+            dic_copy[int(each_key)] = convert_type(dic[each_key])
+        else:
+            try:
+                new_key = float(each_key)
+                dic_copy[new_key] = convert_type(dic[each_key])
+            except:
+                print("unknown type dic key:", each_key, dic[each_key])
+    return dic_copy
+
+def convert_one_scenario(data_dic):
+    for each_key in data_dic:
+        if each_key == 'predicting':
+            sub_dic = data_dic[each_key]
+            # del sub_dic['trajectory_to_mark']
+            data_dic[each_key] = convert_type(sub_dic)
+        else:
+            data_dic[each_key] = convert_type(data_dic[each_key])
+    return data_dic
+
+
 def numpy_to_list(dic, dataset='Waymo'):
     # two level
     print(f'Total Scenarios: {len(list(dic.keys()))}')
@@ -38,103 +86,11 @@ def numpy_to_list(dic, dataset='Waymo'):
         #  'predicting', 'planner_timer', 'predict_timer']
         keys = ['road', 'agent', 'traffic_light', 'predicting']
         print(f'Processsing: {each_scenario_id}')
-
-        def convert_type(obj):
-            if isinstance(obj, dict):
-                return convert_dic_with_np(obj)
-            elif isinstance(obj, np.ndarray):
-                return obj.tolist()
-            elif isinstance(obj, list) or isinstance(obj, tuple):
-                return convert_list_with_np(obj)
-            elif isinstance(obj, bool) or isinstance(obj, int) or isinstance(obj, float) or isinstance(obj, str) or obj is None:
-                return obj
-            else:
-                try:
-                    return float(obj)
-                except:
-                    # print("unknown type: ", obj, type(obj))
-                    return None
-
-        def convert_list_with_np(a_list):
-            list_to_return = []
-            for each_obj in a_list:
-                list_to_return.append(convert_type(each_obj))
-            return list_to_return
-
-        def convert_dic_with_np(dic):
-            dic_copy = {}
-            for each_key in dic:
-                if isinstance(each_key, bool) or isinstance(each_key, int) or isinstance(each_key, float) or isinstance(each_key, str):
-                    dic_copy[each_key] = convert_type(dic[each_key])
-                elif isinstance(each_key, np.int32) or isinstance(each_key, np.int64):
-                    dic_copy[int(each_key)] = convert_type(dic[each_key])
-                else:
-                    try:
-                        new_key = float(each_key)
-                        dic_copy[new_key] = convert_type(dic[each_key])
-                    except:
-                        print("unknown type dic key:", each_key, dic[each_key])
-            return dic_copy
-
-        for each_key in data_dic:
-            if each_key == 'predicting':
-                sub_dic = data_dic[each_key]
-                del sub_dic['trajectory_to_mark']
-                data_dic[each_key] = convert_type(sub_dic)
-            else:
-                data_dic[each_key] = convert_type(data_dic[each_key])
-
-
-
-            # # 'agent'
-            # if each_key not in keys:
-            #     print("unknown key: ", each_key, data_dic[each_key])
-            #     dic_to_return[each_key] = data_dic[each_key]
-            #     # assert not isinstance(data_dic[each_key], dict), dict
-            # elif each_key == 'predicting':
-            #     sub_dic = data_dic[each_key]
-            #     del sub_dic['trajectory_to_mark']
-            #     dic_to_return[each_key] = convert_dic_with_np(sub_dic)
-            #
-            #     # del sub_dic['original_trajectory']
-            #     # del sub_dic['points_to_mark']
-            #     # traj_to_mark = sub_dic['trajectory_to_mark']  # a list of nparray
-            #     # converted_list = [each_np.tolist() for each_np in traj_to_mark]
-            #     # sub_dic['trajectory_to_mark'] = converted_list
-            # else:
-            #     sub_dic = data_dic[each_key]
-            #     for each_obj_id in sub_dic:
-            #         data_each_obj = sub_dic[each_obj_id]
-            #         if isinstance(data_each_obj, dict):
-            #             for each_obj_key in data_each_obj:
-            #                 # 'dir', 'type', etc
-            #                 obj = data_each_obj[each_obj_key]
-            #                 if type(obj) == type(np.empty(1)):
-            #                     data_each_obj[each_obj_key] = obj.tolist()
-            #                 elif isinstance(obj, list):
-            #                     target_obj = []
-            #                     for each_obj in obj:
-            #                         if type(each_obj) == type(np.empty(1)):
-            #                             target_obj.append(each_obj.tolist())
-            #                         else:
-            #                             target_obj.append(each_obj)
-            #                     data_each_obj[each_obj_key] = target_obj
-            #                 elif isinstance(obj, dict):
-            #                     print("unkown dict in dict", obj, each_obj_key)
         try:
             each_scenario_id = each_scenario_id.decode()
         except (UnicodeDecodeError, AttributeError):
             pass
-
-        dic_to_return[each_scenario_id] = data_dic
-
-
-        # if isinstance(obj, dict):
-        #     for each_key2 in obj:
-        #         obj2 = dic[each_key][each_key2]
-        #         print("test: ", type(obj2), type(obj2)==type(np.ones((1))))
-        #         if isinstance(obj2, type(np.ones((1)))):
-        #             dic[each_key][each_key2] = obj2.tolist()
+        dic_to_return[each_scenario_id] = convert_one_scenario(data_dic)
     return dic_to_return
 
 
@@ -188,4 +144,8 @@ def run_convert_onefile(playback_path, file_name):
     with open(rst_path, 'w') as fp:
         json.dump(rst, fp)
     print("Saving Done")
+
+def run_convert_dic(dic):
+    return convert_one_scenario(dic)
+
 

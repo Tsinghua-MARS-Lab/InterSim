@@ -19,7 +19,7 @@ FILE_TO_START = 0
 # for relationship flip: 134, 138, 139, 226
 # for simulation
 # failure cases: 13
-SCENE_TO_START = 242     # 107 for nudging  # 38 for turning large intersection failure
+SCENE_TO_START = 262     # 107 for nudging  # 38 for turning large intersection failure
 SAME_WAY_LANES_SEARCHING_DIST_THRESHOLD = 20
 SAME_WAY_LANES_SEARCHING_DIRECTION_THRESHOLD = 0.1
 

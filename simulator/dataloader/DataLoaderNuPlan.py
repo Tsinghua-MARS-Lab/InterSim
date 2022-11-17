@@ -26,7 +26,7 @@ import hydra
 
 
 # set to 0 to iterate all files
-FILE_TO_START = 1
+FILE_TO_START = 0
 # interesting scenes:
 # 185 see 4 ways stop line, 201 roundabout, 223 & 230 for a huge intersection
 # interesting scenes in the visual file:
@@ -37,7 +37,7 @@ FILE_TO_START = 1
 # for relationship flip: 134, 138, 139, 226
 # for simulation
 # failure cases: 13
-SCENE_TO_START = 17  # nuplan 1-17 unreasonable stuck by ped nearby
+SCENE_TO_START = 0  # nuplan 1-17 unreasonable stuck by ped nearby
 # 107 for nudging  # 38 for turning large intersection failure
 SAME_WAY_LANES_SEARCHING_DIST_THRESHOLD = 20
 SAME_WAY_LANES_SEARCHING_DIRECTION_THRESHOLD = 0.1
@@ -221,7 +221,6 @@ def handvdistance(pt1, pt2, direction):
     return pt1[0] - new_pt2_x, pt1[1] - new_pt2_y
 
 
-from nuplan.database.nuplan_db_orm.nuplandb_wrapper import NuPlanDBWrapper
 import lzma
 import random
 from collections import defaultdict
@@ -230,10 +229,10 @@ from os.path import join
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-import msgpack
-from bokeh.document.document import Document
-from bokeh.io import show
-from bokeh.layouts import column
+# import msgpack
+# from bokeh.document.document import Document
+# from bokeh.io import show
+# from bokeh.layouts import column
 
 from nuplan.common.actor_state.vehicle_parameters import get_pacifica_parameters
 from nuplan.common.maps.nuplan_map.map_factory import NuPlanMapFactory
@@ -255,7 +254,6 @@ from nuplan.planning.simulation.observation.tracks_observation import TracksObse
 from nuplan.planning.simulation.simulation_time_controller.step_simulation_time_controller import (
     StepSimulationTimeController,
 )
-from nuplan.planning.simulation.trajectory.interpolated_trajectory import InterpolatedTrajectory
 from nuplan.database.nuplan_db import nuplan_scenario_queries
 
 def get_default_scenario_extraction(
@@ -319,17 +317,18 @@ class NuPlanDL:
                 max_workers=cpus
             )
 
+        self.current_dataset = db
         # available_scenario_types = defaultdict(list)
         # for log_db in db.log_dbs:
         #     for tag in log_db.scenario_tag:
         #         available_scenario_types[tag.type].append((log_db, tag.lidar_pc_token))
 
-        self.total_file_num = len(db.log_dbs)
+        self.total_file_num = len(self.current_dataset.log_dbs)
         self.current_file_index = FILE_TO_START
         if file_to_start is not None and file_to_start >= 0:
             self.current_file_index = file_to_start
-        self.current_dataset = db
-        self.file_names = [nuplanDB.name for nuplanDB in db.log_dbs]
+
+        self.file_names = [nuplanDB.name for nuplanDB in self.current_dataset.log_dbs]
         if self.current_file_index >= self.total_file_num:
             self.current_file_total_scenario = 0
             self.end = True
@@ -349,7 +348,7 @@ class NuPlanDL:
         self.total_frames = None
 
         # self.loaded_playback = None
-        # self.gt_relation_path = gt_relation_path
+        self.gt_relation_path = gt_relation_path
 
         print("Data Loader Initialized NuPlan: ", self.file_names[0],
               self.start_file_number, FILE_TO_START, self.current_file_index, file_to_start, self.current_scenario_index, self.current_file_total_scenario, self.max_file_number, self.total_file_num)
@@ -477,7 +476,7 @@ class NuPlanDL:
         # goal_state = scenario.get_mission_goal()
         goal_state = scenario.get_expert_goal_state()
         if goal_state is None:
-            data_to_return['ego_goal'] = [-1, -1, 0, -1]
+            data_to_return['ego_goal'] = None
         else:
             data_to_return['ego_goal'] = [goal_state.point.x, goal_state.point.y, 0, goal_state.heading]
 
@@ -935,9 +934,8 @@ class NuPlanDL:
                 edges = get_relation_on_crossing(agent_dic=agent_dic,
                                                  only_prediction_agents=only_predict_interest_agents,
                                                  total_frame_number=self.total_frames,
-                                                 to_predict=False)
-
-                print("testtest: ", edges)
+                                                 to_predict=False,
+                                                 agent_types=[0, 1, 2, 7], fast=True)
 
                 form_a_tree = False
                 if not only_predict_interest_agents and form_a_tree:
@@ -1000,6 +998,13 @@ class NuPlanDL:
             "agent": agent_dic,
             "traffic_light": traffic_dic,
         }
+
+        if 'ego' not in agent_dic:
+            print("no ego and skip")
+            skip = True
+        elif agent_dic['ego']['pose'][20][0] == -1:
+            print("invalid ego pose")
+            skip = True
 
         # sanity check
         if agent_dic is None or road_dic is None or traffic_dic is None:

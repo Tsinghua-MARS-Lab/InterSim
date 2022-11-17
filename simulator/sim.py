@@ -1,10 +1,3 @@
-# from gym import spaces, logger
-#
-# action_space = spaces.Discrete(2)
-# print(action_space.n)
-# action = 0
-# err_msg = "%r (%s) invalid" % (action, type(action))
-# assert action_space.contains(action), err_msg
 import sys
 import os
 import shutil
@@ -19,28 +12,19 @@ import copy
 import tensorflow as tf
 import torch
 
-# from plan.base_planner import BasePlanner
-
 global_predictors = None
 global_simulation_info = None
+gloabl_db = None
 
 def main(args):
-    global global_predictors
+    global global_predictors, gloabl_db
 
     spec = importlib.util.spec_from_file_location('config', args.config)
     if spec is None:
         parser.error('Config file not found.')
     config = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(config)
-
-    # datatime = datetime.datetime.now()
-    # output_dir = os.path.join(args.log_dir,
-    #                           f'{datatime.month:02d}{datatime.day:02d}{datatime.hour:02d}{datatime.minute:02d}')
-    # handle_log_dir(output_dir, args=args)
     output_dir = args.log_dir
-
-    # if args.multi_process:
-    #     output_dir = os.path.join(output_dir, f'{args.starting_file_num}-{args.ending_file_num}')
 
     # config env after setting logging
     env = gym.make("Drive-v0")
@@ -48,9 +32,17 @@ def main(args):
     # set up your planner
     # trajectory_chooser = BasePlanner(env_config)
     # env.configure(env_config, predictor=trajectory_chooser.online_predictor)
-    env.configure(env_config, args=args)
+    if env_config.env.dataset == 'NuPlan':
+        if gloabl_db is None:
+            env.configure(env_config, args=args)
+            gloabl_db = env.data_loader.db
+        else:
+            env.configure(env_config, args=args, db=gloabl_db)
+    else:
+        env.configure(env_config, args=args)
     start_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    env.register_simulation(output_dir=output_dir, starting_time=start_time)
+    if args.save_playback_data:
+        env.register_simulation(output_dir=output_dir, starting_time=start_time)
 
     if env.running_mode == 1:
         for _ in range(args.max_scenarios):  # 00):
@@ -80,8 +72,8 @@ def main(args):
             # env.update_data_to_save()
             # if i % 10 == 0:
             #     env.save_playback(output_dir, clear=False)
-        # print("Saving final result to ", output_dir)
-        # env.save_playback(output_dir, offset=-1)
+        print("Saving final result to ", output_dir)
+        env.save_playback(output_dir, offset=-1)
     elif env.running_mode == 2:
         for _ in range(args.max_scenarios):
             ended = env.reset()
@@ -130,7 +122,8 @@ def main(args):
                 #     print("LOADING NEXT SCENARIO")
     global_simulation_info = env.sim_infos
     ending_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    env.register_simulation(output_dir=output_dir, starting_time=start_time, status='Done', ending_time=ending_time)
+    if args.save_playback_data:
+        env.register_simulation(output_dir=output_dir, starting_time=start_time, status='Done', ending_time=ending_time)
     print("Simulation Finished!")
 
 
@@ -178,7 +171,7 @@ if __name__ == '__main__':
     parser.add_argument('--ending_file_num', type=int, default=-1)
     parser.add_argument('--multi_process', default=False, action='store_true')
     parser.add_argument('--file_per_worker', type=int, default=1)
-    parser.add_argument('--save_playback_data', default=True, action='store_true')
+    parser.add_argument('--save_playback_data', action='store_false')
     parser.add_argument('--max_scenarios', type=int, default=100000)
     # parser.add_argument('--save_playback', default=True, action='store_true')
     args_p = parser.parse_args()
@@ -193,6 +186,22 @@ if __name__ == '__main__':
         dataset_with_map = f'Waymo-{env_config.env.map_name}'
     elif env_config.env.dataset == 'NuPlan':
         dataset_with_map = f'NuPlan-{env_config.env.map_name}'
+        # init db
+        data_path = env_config.env.data_path
+        NUPLAN_DATA_ROOT = data_path['NUPLAN_DATA_ROOT']
+        NUPLAN_MAPS_ROOT = data_path['NUPLAN_MAPS_ROOT']
+        NUPLAN_DB_FILES = data_path['NUPLAN_DB_FILES']
+        from nuplan.database.nuplan_db_orm.nuplandb_wrapper import NuPlanDBWrapper
+        files_names = [os.path.join(NUPLAN_DB_FILES, each_path) for each_path in os.listdir(NUPLAN_DB_FILES)]
+        NUPLAN_MAP_VERSION = 'nuplan-maps-v1.0'
+        cpus = 10
+        gloabl_db = NuPlanDBWrapper(
+                data_root=NUPLAN_DATA_ROOT,
+                map_root=NUPLAN_MAPS_ROOT,
+                db_files=files_names,
+                map_version=NUPLAN_MAP_VERSION,
+                max_workers=cpus
+            )
     output_dir = os.path.join(args_p.log_dir,
                               f'{args_p.method}_{dataset_with_map}_{datatime.month:02d}{datatime.day:02d}{datatime.hour:02d}{datatime.minute:02d}')
 
@@ -228,39 +237,7 @@ if __name__ == '__main__':
         from sim_result.summary import SummaryAPI
         s = SummaryAPI()
         s.summary_and_save(output_dir, global_simulation_info)
-        # iter_list = []
-        # for i in range(total_files):
-        #     new_args = copy.deepcopy(args_p)
-        #     new_args.starting_file_num = starting_file_num+i
-        #     new_args.ending_file_num = starting_file_num+i+1
-        #     iter_list.append(new_args)
-        # for args in iter_list:
-        #     print("test numbers: ", args.starting_file_num, args.ending_file_num)
-        # with Pool(total_files) as p:
-        #     p.map(main, iter_list)
     else:
         handle_log_dir(output_dir, args=args_p)
         args_p.log_dir = output_dir
         main(args_p)
-
-
-
-# def cartpole():
-#     env = gym.make("CartPole-v1")
-#     observation_space = env.observation_space.shape[0]
-#     action_space = env.action_space.n
-#     dqn_solver = DQNSolver(observation_space, action_space)
-#     while True:
-#         state = env.reset()
-#         state = np.reshape(state, [1, observation_space])
-#         while True:
-#             env.render()
-#             action = dqn_solver.act(state)
-#             state_next, reward, terminal, info = env.step(action)
-#             reward = reward if not terminal else -reward
-#             state_next = np.reshape(state_next, [1, observation_space])
-#             dqn_solver.remember(state, action, reward, state_next, terminal)
-#             dqn_solver.experience_replay()
-#             state = state_next
-#             if terminal:
-#                 break
