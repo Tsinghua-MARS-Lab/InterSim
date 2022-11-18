@@ -1129,7 +1129,11 @@ class EnvPlanner:
             tl = tl_dics[lane_id]
             # get the position of the end of this lane
             # Unknown = 0, Arrow_Stop = 1, Arrow_Caution = 2, Arrow_Go = 3, Stop = 4, Caution = 5, Go = 6, Flashing_Stop = 7, Flashing_Caution = 8
-            tl_state = tl["state"][current_frame_idx]
+            try:
+                tl_state = tl["state"][current_frame_idx]
+            except:
+                tl_state = tl["state"][0]
+
             if tl_state in [1, 4, 7]:
                 end_of_tf_checking = min(len(tl["state"]), current_frame_idx + continue_time_threshold)
                 all_red = True
