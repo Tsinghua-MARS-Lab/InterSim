@@ -731,7 +731,11 @@ class BasePlanner(EnvPlanner):
                         if target_shapes.shape[0] == 1:
                             target_length.append(target_shapes[0, 1])
                         else:
-                            target_length.append(target_shapes[earliest_collision_idx, 1])
+                            try:
+                                target_length.append(target_shapes[earliest_collision_idx, 1])
+                            except:
+                                print("Unknown shape size: ", target_shapes.shape)
+                                target_length.append(target_shapes[0, 1])
                     else:
                         target_length.append(target_shapes[1])
                     to_yield.append(True)

@@ -701,6 +701,9 @@ class EnvPlanner:
             if current_upper_roadblock not in route_roadblocks:
                 route_roadblocks += [current_upper_roadblock]
             while len(route_roadblocks) < 3:
+                next_roadblocks = current_state['road'][route_roadblocks[-1]]['next_lanes']
+                if len(next_roadblocks) == 0 or next_roadblocks[0] not in current_state['road']:
+                    break
                 route_roadblocks.append(current_state['road'][route_roadblocks[-1]]['next_lanes'][0])
             # assumption: not far from current lane
             result_lanes = search_lanes(current_lane, route_roadblocks)
