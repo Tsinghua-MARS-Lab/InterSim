@@ -26,7 +26,7 @@ import hydra
 
 
 # set to 0 to iterate all files
-FILE_TO_START = 0
+FILE_TO_START = 2
 # interesting scenes:
 # 185 see 4 ways stop line, 201 roundabout, 223 & 230 for a huge intersection
 # interesting scenes in the visual file:
@@ -37,7 +37,7 @@ FILE_TO_START = 0
 # for relationship flip: 134, 138, 139, 226
 # for simulation
 # failure cases: 13
-SCENE_TO_START = 0  # nuplan 1-17 unreasonable stuck by ped nearby
+SCENE_TO_START = 62  # nuplan 1-17 unreasonable stuck by ped nearby
 # 107 for nudging  # 38 for turning large intersection failure
 SAME_WAY_LANES_SEARCHING_DIST_THRESHOLD = 20
 SAME_WAY_LANES_SEARCHING_DIRECTION_THRESHOLD = 0.1
@@ -974,12 +974,25 @@ class NuPlanDL:
         if not agent_only:
             road_dic, traffic_dic = self.pack_scenario_to_roaddic(scenario)
             route_road_ids = scenario.get_route_roadblock_ids()
-            route_road_ids = [int(each_id) for each_id in route_road_ids]
+            # handle '' empty string in route_road_ids
+            road_ids_processed = []
+            for each_id in route_road_ids:
+                if each_id != '':
+                    try:
+                        road_ids_processed.append(int(each_id))
+                    except:
+                        print(f"Invalid road id in route {each_id}")
+            route_road_ids = road_ids_processed
+            # route_road_ids = [int(each_id) for each_id in route_road_ids]
         else:
             road_dic = {}
             traffic_dic = {}
 
         if road_dic is None or traffic_dic is None:
+            return None
+
+        if len(route_road_ids) == 0:
+            print("Invalid route given, Skipping")
             return None
 
         # mark still agents is the past

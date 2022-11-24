@@ -41,7 +41,7 @@ from interactive_sim.envs.metrics import EnvMetrics
 import agents.car as car
 
 DRAW_AGENT_ARROW = False
-DRAW_AGENT_ID = True
+DRAW_AGENT_ID =  True
 DRAW_LANE_ID = True
 DRAW_RELATION_EDGE = True
 DRAW_DASHED_LINES = False
@@ -160,10 +160,10 @@ class DriveEnv(gym.Env):
                                        max_file_number=max_file_num)
         elif self.dataset == 'NuPlan':
             self.data_path = config.env.data_path
-            self.data_loader = NuPlanDL(scenario_to_start=0,
+            self.data_loader = NuPlanDL(# scenario_to_start=0,
                                         file_to_start=starting_file_num,
                                         max_file_number=max_file_num,
-                                        data_path=self.data_path, db=db)
+                                        data_path=self.data_path, db=db, gt_relation_path=config.env.relation_gt_path)
 
         self.data_loader.total_frames = config.env.planning_to
 
@@ -877,13 +877,24 @@ class DriveEnv(gym.Env):
                 # self.data_to_save[scenarios_id].append(data_to_save)
                 self.data_to_save[scenarios_id] = data_to_save
         elif self.dataset == 'NuPlan':
-            # save all data for nuplan as playback
             scenarios_id = self.data_dic['scenario']
-            self.data_to_save[scenarios_id] = self.data_dic
+            keys_to_save = ['predicting']
+            if keys_to_save is not None:
+                data_to_save = {}
+                for each in keys_to_save:
+                    data_to_save[each] = self.data_dic[each]
+                self.data_to_save[scenarios_id] = data_to_save
+                print("Inspect data to save: ", data_to_save['predicting']['all_relations_last_step'])
+            else:
+                # save all data for nuplan as playback
+                self.data_to_save[scenarios_id] = self.data_dic
 
     def register_simulation(self, output_dir, status='Running', starting_time=None, ending_time=None):
         if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
+            try:
+                os.makedirs(output_dir)
+            except:
+                print('Error when create new register folder')
         file_path = os.path.join(output_dir, 'sim.info')
         dic_to_save = self.sim_infos.copy()
         if self.dataset == 'NuPlan':
@@ -896,6 +907,10 @@ class DriveEnv(gym.Env):
         save(file_path, dic_to_save)
 
     def save_playback(self, output_dir, clear=True, offset=0):
+        """
+        keys in one scenario: ['road', 'agent', 'traffic_light', 'category', 'scenario', 'edges', 'skip', 'edge_type',
+        'route', 'type', 'ego_goal', 'dataset', 'predicting', 'planner_timer', 'predict_timer', 'metrics', 'info']
+        """
         if len(list(self.data_to_save.keys())) < 1:
             return
         # inspect is valid
@@ -1154,6 +1169,9 @@ class GraphicDrawer():
                 else:
                     print("Unknown line type: ", road_type)
         elif self.dataset == 'NuPlan':
+            if int(road_id) in [53239, 53058, 51588]:
+                self.draw_small_dashed(points=points, color='red', directions=outbound)
+                return
             if road_id != 0 and DRAW_LANE_ID and road_type in [0, 11]:
                 self.draw_text(points=points[0], text=str(road_id), size=TEXT_SIZE)
             if road_type == 17:

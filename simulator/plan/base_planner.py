@@ -147,7 +147,6 @@ class BasePlanner(EnvPlanner):
                         continue
                     # if k = 1
                     k = 6
-                    # k = 1
                     for n in range(k):
                         pred_traj = self.online_predictor.data['predicting']['marginal_trajectory'][each_agent_id]['rst'][n]
                         total_frames_in_pred = pred_traj.shape[0]
@@ -722,22 +721,27 @@ class BasePlanner(EnvPlanner):
                     to_yield.append(False)
                 else:
                     progress_for_all_traj.append(earliest_collision_idx)
+                    # mark other's trajectory to yield
                     trajectory_to_mark.append(traj_to_mark_this_traj)
                     rsts_to_yield.append([earliest_collision_idx, collision_point, earliest_conflict_agent, target_speed, each_other_traj, detected_relation])
                     interpolators.append(my_interpolator)
                     routes_to_yield.append(selected_route)
-                    target_shapes = current_state['agent'][earliest_conflict_agent]['shape']
-                    if len(target_shapes.shape) == 2:
-                        if target_shapes.shape[0] == 1:
-                            target_length.append(target_shapes[0, 1])
-                        else:
-                            try:
-                                target_length.append(target_shapes[earliest_collision_idx, 1])
-                            except:
-                                print("Unknown shape size: ", target_shapes.shape)
-                                target_length.append(target_shapes[0, 1])
+                    if earliest_conflict_agent == 99999:
+                        # shape for traffic light
+                        target_length.append(2)
                     else:
-                        target_length.append(target_shapes[1])
+                        target_shapes = current_state['agent'][earliest_conflict_agent]['shape']
+                        if len(target_shapes.shape) == 2:
+                            if target_shapes.shape[0] == 1:
+                                target_length.append(target_shapes[0, 1])
+                            else:
+                                try:
+                                    target_length.append(target_shapes[earliest_collision_idx, 1])
+                                except:
+                                    print("Unknown shape size: ", target_shapes.shape)
+                                    target_length.append(target_shapes[0, 1])
+                        else:
+                            target_length.append(target_shapes[1])
                     to_yield.append(True)
 
 
@@ -761,11 +765,14 @@ class BasePlanner(EnvPlanner):
                     # all yields, choose furtheest one
                     ego_to_yield = True
                     index_to_select = progress_for_all_traj.index(max(progress_for_all_traj))
+
             if ego_to_yield:
-                current_state['predicting']['trajectory_to_mark'].append(trajectory_to_mark[index_to_select])
+                if trajectory_to_mark[index_to_select] is not None:
+                    # for traffic light, this each other traj will be None
+                    current_state['predicting']['trajectory_to_mark'].append(trajectory_to_mark[index_to_select])
                 earliest_collision_idx, collision_point, earliest_conflict_agent, target_speed, each_other_traj, detected_relation = rsts_to_yield[index_to_select]
                 my_interpolator = interpolators[index_to_select]
-                my_traj = trajectory_to_mark[index_to_select]
+                my_traj = my_interpolated_marginal_trajectories[index_to_select]
                 selected_route = routes_to_yield[index_to_select]
                 S0 = target_length[index_to_select] / 2 * 1.5
             else:
@@ -774,10 +781,11 @@ class BasePlanner(EnvPlanner):
                 my_traj = my_interpolated_marginal_trajectories[index_to_select]
                 selected_route = current_routes[index_to_select]
 
-            current_lane = selected_route[0]
-            current_lane_speed_limit = current_state['road'][current_lane]['speed_limit'] if current_lane in current_state['road'] and 'speed_limit' in current_state['road'][current_lane] else None
-            if current_lane_speed_limit is not None:
-                my_target_speed = mph_to_meterpersecond(current_lane_speed_limit) / self.frame_rate
+            if len(selected_route) > 0:
+                current_lane = selected_route[0]
+                current_lane_speed_limit = current_state['road'][current_lane]['speed_limit'] if current_lane in current_state['road'] and 'speed_limit' in current_state['road'][current_lane] else None
+                if current_lane_speed_limit is not None:
+                    my_target_speed = mph_to_meterpersecond(current_lane_speed_limit) / self.frame_rate
 
             if earliest_collision_idx is not None and (tf_light_frame_idx is None or earliest_collision_idx < tf_light_frame_idx):
                 # data to save
@@ -790,7 +798,7 @@ class BasePlanner(EnvPlanner):
                         current_state['predicting']['relations_per_frame_ego'][current_frame_idx + dt] += detected_relation
             elif tf_light_frame_idx is not None:
                 earliest_collision_idx = tf_light_frame_idx
-                collision_point = ego_org_traj[earliest_collision_idx, :2]
+                # collision_point = ego_org_traj[earliest_collision_idx, :2]
                 earliest_conflict_agent = 99999
                 target_speed = 0
                 detected_relation = None

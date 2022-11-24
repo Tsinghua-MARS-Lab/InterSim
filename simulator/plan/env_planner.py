@@ -685,7 +685,7 @@ class EnvPlanner:
                     if each_lane not in visited_lanes:
                         visited_lanes.append(each_lane)
                         if each_lane not in current_state['road']:
-                            result_lanes.append(looping_lanes+[each_lane])
+                            result_lanes.append(looping_lanes)
                             continue
                         each_block = current_state['road'][each_lane]['upper_level'][0]
                         if each_block not in route_roadblocks:
@@ -699,8 +699,8 @@ class EnvPlanner:
             route_roadblocks = current_state['route'] if 'route' in current_state else None
             current_upper_roadblock = current_state['road'][current_lane]['upper_level'][0]
             if current_upper_roadblock not in route_roadblocks:
-                route_roadblocks += [current_upper_roadblock]
-            while len(route_roadblocks) < 3:
+                route_roadblocks.insert(0, current_upper_roadblock)
+            while len(route_roadblocks) < 3 and route_roadblocks[-1] in current_state['road']:
                 next_roadblocks = current_state['road'][route_roadblocks[-1]]['next_lanes']
                 if len(next_roadblocks) == 0 or next_roadblocks[0] not in current_state['road']:
                     break
@@ -719,6 +719,8 @@ class EnvPlanner:
                 reference_trajectory = None
                 reference_yaw = None
                 for each_lane in each_route:
+                    if each_lane not in current_state['road']:
+                        break
                     if reference_trajectory is None:
                         reference_trajectory = current_state['road'][each_lane]['xyz'][current_closest_pt_idx:, :2].copy()
                         reference_yaw = current_state['road'][each_lane]['dir'][current_closest_pt_idx:].copy()
@@ -728,33 +730,58 @@ class EnvPlanner:
                         reference_yaw = np.concatenate((reference_yaw,
                                                         current_state['road'][each_lane]['dir'].copy()))
                 # get CBC
-                starting_index = int(my_current_v_per_step * self.frame_rate * 2)
-                starting_index = min(starting_index, reference_trajectory.shape[0] - 1)
-                p4 = reference_trajectory[starting_index, :2]
-                starting_yaw = -utils.normalize_angle(reference_yaw[starting_index] + math.pi / 2)
-                delta = euclidean_distance(p4, my_current_pose[:2]) / 4
-                x, y = math.sin(starting_yaw) * delta + p4[0], math.cos(starting_yaw) * delta + p4[1]
-                p3 = [x, y]
-
-                p1 = my_current_pose[:2]
-                yaw = - utils.normalize_angle(my_current_pose[3] + math.pi / 2)
-                # delta = euclidean_distance(p4, my_current_pose[:2]) / 4
-                delta = min(70/self.frame_rate, euclidean_distance(p4, my_current_pose[:2]) / 2)
-                x, y = -math.sin(yaw) * delta + my_current_pose[0], -math.cos(yaw) * delta + my_current_pose[1]
-                p2 = [x, y]
-                if euclidean_distance(p4, p1) > 2:
+                if reference_trajectory.shape[0] < 2:
+                    p1 = my_current_pose[:2]
+                    yaw = - utils.normalize_angle(my_current_pose[3] + math.pi / 2)
+                    delta = self.planning_horizon
+                    x, y = -math.sin(yaw) * delta + my_current_pose[0], -math.cos(yaw) * delta + \
+                           my_current_pose[1]
+                    p2 = [x, y]
+                    p3 = p2
+                    x, y = -math.sin(yaw) * delta + p2[0], -math.cos(yaw) * delta + p2[1]
+                    p4 = [x, y]
+                    # 4. generate a curve with cubic BC
                     if my_current_v_per_step < 1:
                         proper_v_for_cbc = (my_current_v_per_step + 1) / 2
                     else:
                         proper_v_for_cbc = my_current_v_per_step
-
-                    connection_traj = self.trajectory_from_cubic_BC(p1=p1, p2=p2, p3=p3, p4=p4, v=proper_v_for_cbc)
-                    current_trajectory = np.concatenate((connection_traj, reference_trajectory[starting_index:, :2]))
+                    if euclidean_distance(p4, p1) > 1:
+                        print(f"No lanes found for route of {agent_id} {proper_v_for_cbc} {my_current_pose}")
+                        connection_traj = self.trajectory_from_cubic_BC(p1=p1, p2=p2, p3=p3, p4=p4, v=proper_v_for_cbc)
+                    else:
+                        assert False, f"Error: P4, P1 overlapping {p4, p1}"
+                    assert connection_traj.shape[0] > 0, connection_traj.shape
+                    result_traj.append(connection_traj)
+                    current_state['predicting']['trajectory_to_mark'].append(current_trajectory)
                 else:
-                    current_trajectory = reference_trajectory[starting_index:, :2]
-                result_traj.append(current_trajectory)
-                current_state['predicting']['trajectory_to_mark'].append(current_trajectory)
+                    starting_index = int(my_current_v_per_step * self.frame_rate * 2)
+                    starting_index = min(starting_index, reference_trajectory.shape[0] - 1)
+                    p4 = reference_trajectory[starting_index, :2]
+                    starting_yaw = -utils.normalize_angle(reference_yaw[starting_index] + math.pi / 2)
+                    delta = euclidean_distance(p4, my_current_pose[:2]) / 4
+                    x, y = math.sin(starting_yaw) * delta + p4[0], math.cos(starting_yaw) * delta + p4[1]
+                    p3 = [x, y]
 
+                    p1 = my_current_pose[:2]
+                    yaw = - utils.normalize_angle(my_current_pose[3] + math.pi / 2)
+                    # delta = euclidean_distance(p4, my_current_pose[:2]) / 4
+                    delta = min(70/self.frame_rate, euclidean_distance(p4, my_current_pose[:2]) / 2)
+                    x, y = -math.sin(yaw) * delta + my_current_pose[0], -math.cos(yaw) * delta + my_current_pose[1]
+                    p2 = [x, y]
+                    if euclidean_distance(p4, p1) > 2:
+                        if my_current_v_per_step < 1:
+                            proper_v_for_cbc = (my_current_v_per_step + 1) / 2
+                        else:
+                            proper_v_for_cbc = my_current_v_per_step
+
+                        connection_traj = self.trajectory_from_cubic_BC(p1=p1, p2=p2, p3=p3, p4=p4, v=proper_v_for_cbc)
+                        current_trajectory = np.concatenate((connection_traj, reference_trajectory[starting_index:, :2]))
+                    else:
+                        current_trajectory = reference_trajectory[starting_index:, :2]
+                    result_traj.append(current_trajectory)
+                    current_state['predicting']['trajectory_to_mark'].append(current_trajectory)
+
+            assert len(result_traj) == len(result_lanes), f'unmatched shape {len(result_traj)} {len(result_lanes)}'
             self.routed_traj[agent_id] = result_traj
             return self.routed_traj[agent_id], result_lanes
 
@@ -771,11 +798,12 @@ class EnvPlanner:
                         print("ERROR: Infinite looping lanes")
                         break
 
-
                     while_counter += 1
                     # turning: 1=left turn, 2=right turn, 3=UTurn
                     # UTurn -> Skip
                     # Left/Right check distance, if < 15 then skip, else not skip
+                    if current_looping_lane not in current_state['road']:
+                        break
                     current_looping_lane_turning = current_state['road'][current_looping_lane]['turning']
                     if dynamic_turnings and current_looping_lane_turning == 3 or (current_looping_lane_turning in [1, 2] and euclidean_distance(current_state['road'][current_looping_lane]['xyz'][-1, :2], my_current_pose[:2]) < 15):
                         # skip turning lanes
@@ -1022,6 +1050,8 @@ class EnvPlanner:
                                     target_lane = current_back_looping_lane
                                     break
                                 else:
+                                    if current_back_looping_lane not in current_state['road']:
+                                        break
                                     prev_lanes = current_state['road'][current_back_looping_lane]['previous_lanes']
                                     if not isinstance(prev_lanes, list):
                                         prev_lanes = prev_lanes.tolist()
@@ -1801,6 +1831,8 @@ class SudoInterpolator:
         else:
             pose = self.trajectory.copy()
         if distance <= MINIMAL_DISTANCE_PER_STEP:
+            return self.current_pose
+        if pose.shape is None or len(pose.shape) < 2:
             return self.current_pose
         total_frame, _ = pose.shape
         # assert distance > 0, distance
