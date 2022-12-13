@@ -91,6 +91,10 @@ and compile Cython scripts with
 
 If you need to use another predictor, travel to the src folder and run the same command to compile the Cython script first.
 
+You might need to compile the Cython scripts for the marginal predictor as well to run with the default settings.
+
+`cd prediction/M2I/marginal_prediction/src/`
+`cython -a utils_cython.pyx && python setup.py build_ext --inplace`
 
 ## Check results
 
@@ -168,3 +172,5 @@ year={2022},
 organization={IEEE}
 }
 ```
+
+
